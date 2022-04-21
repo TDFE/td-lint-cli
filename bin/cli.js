@@ -9,7 +9,26 @@ const spinner = ora('Loading undead unicorns');
 const pkg = require('../package');
 const { getSpace, getScripts, getDependencies, getDevDependencies } = require('../utils')
 
+const res = command => resolve(__dirname, '../commands/', command);
+
 program.version(chalk.green(`${pkg.version}`))
+
+progprogram
+    .command('husky')
+    .description('项目添加husky')
+    .alias('h')
+    .action(() => {
+        require(res('husky'))();
+    })
+
+progprogram
+    .command('eslint')
+    .description('项目添加eslint')
+    .alias('e')
+    .action(() => {
+        require(res('eslint'))();
+    })
+
 
 program
 .action(async() => {
