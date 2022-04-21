@@ -8,10 +8,7 @@ const npm = new Npm();
  * @param {*} cliList 新增的命令
  * @returns 
  */
-function getScripts(scripts, cliList) {
-    if(!scripts) {
-        return undefined
-    }
+function getScripts(scripts = {}, cliList) {
     const mapCli = {
         "prepare": "husky install",
         "changeLog": "rm -rf CHANGELOG.md && conventional-changelog -p angular -i CHANGELOG.md -s",
@@ -34,7 +31,7 @@ function getScripts(scripts, cliList) {
  * @param {*} deleteKey 有这个key的包就要删除
  * @returns 
  */
-function getDependencies(dependencies, deleteList, deleteKey) {
+function getDependencies(dependencies = {}, deleteList, deleteKey) {
 	deleteList.forEach(i => {
 		delete dependencies[i]
 	})
@@ -57,40 +54,13 @@ function getDependencies(dependencies, deleteList, deleteKey) {
  * @param {*} addList 需要新增的包
  * @returns 
  */
-async function getDevDependencies(devDependencies, addList) {
-
+async function getDevDependencies(devDependencies = {}, addList) {
     for(let i of addList) {
-        const info = await  npm.repo(i).package();
+        const info = await npm.repo(i).package();
         devDependencies[i] = `^${info.version}`
     }
 
     return devDependencies
-
-    // const eslintConfigTongdun = await npm.repo('eslint-config-tongdun').package();
-    // const eslintPluginTdRulesPlugin = await npm.repo('eslint-plugin-td-rules-plugin').package();
-    // const lintStaged = await npm.repo('lint-staged').package();
-    // const commitlintCli = await npm.repo('@commitlint/cli').package();
-    // const commitlintConfigConventional = await npm.repo('@commitlint/config-conventional').package();
-    // const commitizen = await npm.repo('commitizen').package();
-    // const czCustomizable = await npm.repo('cz-customizable').package();
-    // const czConventionalChangelog = await npm.repo('cz-conventional-changelog').package();
-    
-	// const obj = {
-	// 	...devDependencies,
-	// 	"eslint": "^8.13.0",
-	// 	"eslint-config-tongdun": `^${eslintConfigTongdun.version}`,
-	// 	"eslint-plugin-td-rules-plugin": `^${eslintPluginTdRulesPlugin.version}`,
-	// }
-
-	// obj["lint-staged"] = `^${lintStaged.version}`
-    // obj['@commitlint/cli'] = `^${commitlintCli.version}`
-    // obj['@commitlint/config-conventional'] = `^${commitlintConfigConventional.version}`
-	// obj["commitizen"] = `^${commitizen.version}`
-    // obj["cz-customizable"] = `^${czCustomizable.version}`
-	// obj["cz-conventional-changelog"] = `^${czConventionalChangelog.version}`
-	// obj["husky"] = "^7.0.4"
-
-	// return obj
 }
 
 module.exports = {

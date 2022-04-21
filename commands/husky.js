@@ -2,6 +2,9 @@
 const fs = require('fs')
 const path = require('path')
 const chalk = require('chalk');
+const shell = require('shelljs');
+const ora = require('ora');
+const spinner = ora('Loading undead unicorns');
 const { getScripts, getDependencies, getDevDependencies } = require('../utils')
 
 /**
@@ -14,15 +17,15 @@ const generatePackage = async function(pkj) {
     const newDependencies = getDependencies(pkj.dependencies, ["commitizen", 'cz-customizable', "cz-conventional-changelog", "husky"])
     const newDevDependencies = await getDevDependencies(pkj.devDependencies, ["@commitlint/cli", "@commitlint/config-conventional", "commitizen", "cz-customizable", "cz-conventional-changelog", "husky"])
 
-    if(newScript) {
+    if(newScript && Object.keys(newScript).length >= 1) {
         pkj.scripts = newScript;
     }
    
-    if(newDependencies) {
+    if(newDependencies && Object.keys(newDependencies).length >= 1) {
         pkj.dependencies = newDependencies;
     }
 
-    if(devDependencies) {
+    if(newDevDependencies && Object.keys(newDevDependencies).length >= 1) {
         pkj.devDependencies = newDevDependencies;
     }
 

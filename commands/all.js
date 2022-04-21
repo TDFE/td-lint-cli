@@ -31,10 +31,10 @@ const question = [
  * @param {*} pkj 老的package.json
  * @returns 
  */
-const generatePackage = async function(pkj) {
-    const newScript = getScripts(pkj.scripts, ["eslint-fixed"])
-    const newDependencies = getDependencies(pkj.dependencies, ["lint-stage"])
-    const newDevDependencies = await getDevDependencies(pkj.devDependencies, ["eslint", "eslint-config-tongdun", "eslint-plugin-td-rules-plugin"])
+ const generatePackage = async function(pkj) {
+    const newScript = getScripts(pkj.scripts, ["prepare", "changeLog", "eslint-fixed"])
+    const newDependencies = getDependencies(pkj.dependencies, ["commitizen", 'cz-customizable', "cz-conventional-changelog", "husky", "lint-stage"])
+    const newDevDependencies = await getDevDependencies(pkj.devDependencies, ["@commitlint/cli", "@commitlint/config-conventional", "commitizen", "cz-customizable", "cz-conventional-changelog", "husky", "eslint", "eslint-config-tongdun", "eslint-plugin-td-rules-plugin"])
 
     if(newScript) {
         pkj.scripts = newScript;
@@ -54,7 +54,7 @@ const generatePackage = async function(pkj) {
 module.exports = function() {
     prompt(question).then(async ({ type, isTs }) => {
         console.log(type, isTs)
-        spinner.start("🚀 eslint配置 初始化中");
+        spinner.start("🚀 husky & eslint配置 初始化中");
         const str = fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf-8');
 
         if(!str) {
@@ -62,6 +62,11 @@ module.exports = function() {
         }
         const packageJSON = JSON.parse(str)
         const newPackage = await generatePackage(packageJSON)
+        newPackage["config"] = {
+            "commitizen": {
+                "path": "./node_modules/cz-customizable"
+            }
+        }
         newPackage["lint-staged"] = {
             "src/**/*.{js,jsx,ts,tsx}": [
                 "eslint --max-warnings 0 --ext .js,.jsx,.ts,.tsx"
