@@ -29,6 +29,12 @@ const generatePackage = async function(pkj) {
         pkj.devDependencies = newDevDependencies;
     }
 
+    pkj["config"] = {
+        "commitizen": {
+            "path": "./node_modules/cz-customizable"
+        }
+    }
+
     return pkj
 }
 
@@ -39,25 +45,29 @@ module.exports = async function() {
     if(!str) {
         spinner.succeed("😄 初始化失败,请检查是否存在package.json"); 
     }
-
+    // 重写package.json
     const packageJSON = JSON.parse(str)
     const newPackage = await generatePackage(packageJSON)
-    newPackage["config"] = {
-        "commitizen": {
-            "path": "./node_modules/cz-customizable"
-        }
-    }
-    // 重写package.json
     fs.writeFileSync(path.resolve(process.cwd(), './package.json'), JSON.stringify(newPackage, null, 4))
-    
+     
+    // 获取最新的template
+    await shell.rm('-rf',  path.resolve(__dirname, '../template'))
+    await shell.exec(`git clone git@github.com:TDFE/ci-files.git ${path.resolve(__dirname, '../template')}`)
+
+    // copy templatee里面的文件
+    await shell.cp(path.resolve(__dirname, '../template/husky/commitlint.config.js'), process.cwd())
+    await shell.cp(path.resolve(__dirname, '../template/husky/.cz-config.js'), process.cwd())
+            
     await shell.cd(process.cwd())
+
     chalk.green("正在执行npm install")
     await shell.exec('npm i')
+
     // 执行git hook
     await shell.exec('npm run prepare')
-    await shell.exec(`npx husky add .husky/commit-msg 'npx commitlint --edit'`)
-    await shell.exec(`npx husky add .husky/pre-commit 'echo "开始对修改文件进行eslint校验'"`)
-    await shell.exec(`npx husky add .husky/pre-commit 'npx --no-install lint-staged'`)
-    await shell.exec(`npx husky add .husky/prepare-commit-msg 'exec < /dev/tty && node_modules/.bin/cz --hook || true'`)
+    await shell.cp(path.resolve(__dirname, '../template/husky/commit-msg'), '.husky')
+    await shell.cp(path.resolve(__dirname, '../template/husky/pre-commit'), '.husky')
+    await shell.cp(path.resolve(__dirname, '../template/husky/prepare-commit-msg'), '.husky')
+
     spinner.succeed("😄 初始化完成, 🤖️生成脚本");
 }
