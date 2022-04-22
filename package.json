@@ -7,7 +7,10 @@
         "tdc": "bin/cli"
     },
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "prepare": "husky install",
+        "changeLog": "rm -rf CHANGELOG.md && conventional-changelog -p angular -i CHANGELOG.md -s",
+        "eslint-fixed": "npx eslint --max-warnings 0 --fix --ext .js,.jsx,.ts,.tsx ./src"
     },
     "author": "zefei.zhou",
     "license": "ISC",
@@ -17,5 +20,27 @@
         "npm-api": "^1.0.1",
         "ora": "^5.4.1",
         "shelljs": "^0.8.5"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^16.2.3",
+        "@commitlint/config-conventional": "^16.2.1",
+        "commitizen": "^4.2.4",
+        "cz-conventional-changelog": "^3.3.0",
+        "cz-customizable": "^6.3.0",
+        "eslint": "^8.13.0",
+        "eslint-config-tongdun": "^1.1.1",
+        "eslint-plugin-td-rules-plugin": "^1.0.1",
+        "husky": "^7.0.4",
+        "lint-staged": "^12.4.0"
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-customizable"
+        }
+    },
+    "lint-staged": {
+        "src/**/*.{js,jsx,ts,tsx}": [
+            "eslint --max-warnings 0 --fix --ext .js,.jsx,.ts,.tsx"
+        ]
     }
 }
