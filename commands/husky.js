@@ -43,7 +43,8 @@ module.exports = async function() {
     const str = fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf-8');
 
     if(!str) {
-        spinner.succeed('😄 初始化失败,请检查是否存在package.json');
+        spinner.stop('😄 初始化失败,请检查是否存在package.json');
+        return;
     }
     // 重写package.json
     const packageJSON = JSON.parse(str);

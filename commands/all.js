@@ -19,7 +19,7 @@ const question = [
         type: 'confirm',
         name: 'isTs',
         message: '是否为ts项目',
-        default: 'No',
+        default: false,
         validate(val){
             return val;
         }
@@ -34,7 +34,7 @@ const question = [
 const generatePackage = async function(pkj) {
     const newScript = getScripts(pkj.scripts, ['prepare', 'changeLog', 'eslint-fixed']);
     const newDependencies = getDependencies(pkj.dependencies, ['commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky', 'lint-staged']);
-    const newDevDependencies = await getDevDependencies(pkj.devDependencies, ['@commitlint/cli', '@commitlint/config-conventional', 'commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky', 'eslint', 'eslint-config-tongdun', 'eslint-plugin-td-rules-plugin']);
+    const newDevDependencies = await getDevDependencies(pkj.devDependencies, ['@commitlint/cli', '@commitlint/config-conventional', 'commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky', 'eslint', 'eslint-config-tongdun', 'eslint-plugin-td-rules-plugin', 'lint-staged']);
 
     if(newScript) {
         pkj.scripts = newScript;
@@ -68,7 +68,8 @@ module.exports = function() {
         const str = fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf-8');
 
         if(!str) {
-            spinner.succeed('😄 初始化失败,请检查是否存在package.json');
+            spinner.stop('😄 初始化失败,请检查是否存在package.json');
+            return;
         }
         // 重写package.json
         const packageJSON = JSON.parse(str);
