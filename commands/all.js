@@ -83,6 +83,7 @@ module.exports = function () {
         await shell.cp(path.resolve(__dirname, '../template/husky/commitlint.config.js'), process.cwd());
         await shell.cp(path.resolve(__dirname, '../template/husky/.cz-config.js'), process.cwd());
         await shell.cp(path.resolve(__dirname, `../template/eslint/${isTs ? type + 'Ts' : type}/.eslintrc`), process.cwd());
+        await shell.cp(path.resolve(__dirname, '../template/eslint/build'), process.cwd());
         await shell.cp(path.resolve(__dirname, '../template/eslint/.editorconfig'), process.cwd());
 
         await shell.cd(process.cwd());
