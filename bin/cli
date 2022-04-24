@@ -16,7 +16,6 @@ program
         require(res('all'))();
     });
 
-
 program
     .command('husky')
     .description('项目添加husky配置')

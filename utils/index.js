@@ -55,10 +55,11 @@ function getDependencies(dependencies = {}, deleteList, deleteKey) {
  * @returns
  */
 async function getDevDependencies(devDependencies = {}, addList) {
-    for(let i of addList) {
-        const info = await npm.repo(i).package();
-        devDependencies[i] = `^${info.version}`;
-    }
+    const list = await Promise.all(addList.map(i => npm.repo(i).package()));
+
+    addList.forEach((i, index) => {
+        devDependencies[i] = list[index].version;
+    });
 
     return devDependencies;
 }
