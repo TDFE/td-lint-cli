@@ -3,14 +3,21 @@ module.exports = {
     // 以下时我们自定义的规则
     rules: {
         'type-enum': [
-          2,
-          'always',
-          [
-            'feat', // 新功能（feature）
-            'fix', // 修补bug
-            'ci', // 部署
-            'revert' // feat(pencil): add ‘graphiteWidth’ option (撤销之前的commit)
-          ]
+            2,
+            'always',
+            [
+                'feat', // 新功能（feature）
+                'fix', // 修补bug
+                'ci',
+                'style',
+                'chore',
+                'refactor',
+                'build',
+                'docs',
+                'perf',
+                'test',
+                'revert' // feat(pencil): add ‘graphiteWidth’ option (撤销之前的commit)
+            ]
         ],
         'type-case': [0],
         'type-empty': [0],
@@ -19,5 +26,5 @@ module.exports = {
         'subject-full-stop': [0, 'never'],
         'subject-case': [0, 'never'],
         'header-max-length': [0, 'always', 100]
-      }
+    }
 };

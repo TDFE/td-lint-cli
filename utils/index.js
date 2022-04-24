@@ -1,4 +1,7 @@
+const path = require('path');
+const download = require('download-git-repo');
 const Npm = require('npm-api');
+const shell = require('shelljs');
 
 const npm = new Npm();
 
@@ -16,7 +19,7 @@ function getScripts(scripts = {}, cliList) {
     };
 
     cliList.forEach(i => {
-        if(Object.keys(mapCli).includes(i)) {
+        if (Object.keys(mapCli).includes(i)) {
             scripts[i] = mapCli[i];
         }
     });
@@ -36,10 +39,10 @@ function getDependencies(dependencies = {}, deleteList, deleteKey) {
         delete dependencies[i];
     });
 
-    if(deleteKey) {
-        for(let key in dependencies) {
+    if (deleteKey) {
+        for (let key in dependencies) {
             // 删除deleteKey相关的包
-            if(key.includes(deleteKey)) {
+            if (key.includes(deleteKey)) {
                 delete dependencies[key];
             }
         }
@@ -58,14 +61,36 @@ async function getDevDependencies(devDependencies = {}, addList) {
     const list = await Promise.all(addList.map(i => npm.repo(i).package()));
 
     addList.forEach((i, index) => {
-        devDependencies[i] = list[index].version;
+        devDependencies[i] = `^${list[index].version}`;
     });
 
     return devDependencies;
 }
 
+/**
+ * 下载远程仓库的配置文件
+ * @returns
+ */
+async function cloneTemplate() {
+    return new Promise((resolve, reject) => {
+        download(
+            'direct:https://gitee.com/tdfe/template-ci-files#master',
+            path.resolve(__dirname, '../template'),
+            { clone: true },
+            function (error) {
+                if (error) {
+                    reject(error);
+                    shell.exit();
+                }
+                resolve();
+            }
+        );
+    });
+}
+
 module.exports = {
     getScripts,
     getDependencies,
-    getDevDependencies
+    getDevDependencies,
+    cloneTemplate
 };

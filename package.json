@@ -17,6 +17,7 @@
     "dependencies": {
         "chalk": "^4.1.2",
         "commander": "^9.1.0",
+        "download-git-repo": "^3.0.2",
         "npm-api": "^1.0.1",
         "ora": "^5.4.1",
         "shelljs": "^0.8.5"

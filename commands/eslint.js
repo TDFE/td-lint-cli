@@ -6,7 +6,7 @@ const shell = require('shelljs');
 const ora = require('ora');
 const { prompt } = require('inquirer');
 const spinner = ora('Loading undead unicorns');
-const { getScripts, getDependencies, getDevDependencies } = require('../utils');
+const { getScripts, getDependencies, getDevDependencies, cloneTemplate } = require('../utils');
 
 const question = [
     {
@@ -20,7 +20,7 @@ const question = [
         name: 'isTs',
         message: '是否为ts项目',
         default: false,
-        validate(val){
+        validate(val) {
             return val;
         }
     }
@@ -31,20 +31,20 @@ const question = [
  * @param {*} pkj 老的package.json
  * @returns
  */
-const generatePackage = async function(pkj) {
+const generatePackage = async function (pkj) {
     const newScript = getScripts(pkj.scripts, ['eslint-fixed']);
     const newDependencies = getDependencies(pkj.dependencies, ['lint-staged']);
     const newDevDependencies = await getDevDependencies(pkj.devDependencies, ['eslint', 'eslint-config-tongdun', 'eslint-plugin-td-rules-plugin', 'lint-staged']);
 
-    if(newScript) {
+    if (newScript) {
         pkj.scripts = newScript;
     }
 
-    if(newDependencies) {
+    if (newDependencies) {
         pkj.dependencies = newDependencies;
     }
 
-    if(newDevDependencies) {
+    if (newDevDependencies) {
         pkj.devDependencies = newDevDependencies;
     }
 
@@ -57,12 +57,12 @@ const generatePackage = async function(pkj) {
     return pkj;
 };
 
-module.exports = function() {
+module.exports = function () {
     prompt(question).then(async ({ type, isTs }) => {
         spinner.start('🚀 eslint配置 初始化中');
         const str = fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf-8');
 
-        if(!str) {
+        if (!str) {
             spinner.stop('😄 初始化失败,请检查是否存在package.json');
             return;
         }
@@ -73,7 +73,7 @@ module.exports = function() {
 
         // 获取最新的template
         await shell.rm('-rf', path.resolve(__dirname, '../template'));
-        await shell.exec(`git clone git@github.com:TDFE/ci-files.git ${path.resolve(__dirname, '../template')}`);
+        await cloneTemplate();
 
         // copy templatee里面的文件
         await shell.cp(path.resolve(__dirname, `../template/eslint/${isTs ? type + 'Ts' : type}/.eslintrc`), process.cwd());
@@ -85,8 +85,11 @@ module.exports = function() {
         await shell.rm('-rf', 'package-lock.json');
         await shell.rm('-rf', 'node_modules');
 
-        chalk.green('正在执行npm install');
-        await shell.exec('npm i');
         spinner.succeed('😄 初始化完成, 🤖️生成脚本');
+        spinner.start('正在执行npm install');
+
+        await shell.exec('npm i');
+
+        spinner.succeed('安装完成');
     });
 };
