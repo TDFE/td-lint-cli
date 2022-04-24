@@ -1,0 +1,35 @@
+#!/usr/bin/env node
+const path = require('path');
+const program = require('commander');
+const chalk = require('chalk');
+const pkg = require('../package');
+
+const res = command => path.resolve(__dirname, '../commands/', command);
+
+program.version(chalk.green(`${pkg.version}`));
+
+program
+    .command('all')
+    .description('项目添加husky/eslint配置')
+    .alias('a')
+    .action(() => {
+        require(res('all'))();
+    });
+
+program
+    .command('husky')
+    .description('项目添加husky配置')
+    .alias('h')
+    .action(() => {
+        require(res('husky'))();
+    });
+
+program
+    .command('eslint')
+    .description('项目添加eslint配置')
+    .alias('e')
+    .action(() => {
+        require(res('eslint'))();
+    });
+
+program.parse(process.argv);
