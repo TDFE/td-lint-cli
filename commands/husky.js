@@ -4,7 +4,7 @@ const path = require('path');
 const shell = require('shelljs');
 const ora = require('ora');
 const spinner = ora('Loading undead unicorns');
-const { getScripts, getDependencies, getDevDependencies } = require('../utils');
+const { getScripts, getDependencies, getDevDependencies, cloneTemplate } = require('../utils');
 
 /**
  * 生成新的package.json
@@ -52,7 +52,7 @@ module.exports = async function () {
 
     // 获取最新的template
     await shell.rm('-rf', path.resolve(__dirname, '../template'));
-    await shell.exec(`git clone git@github.com:TDFE/ci-files.git ${path.resolve(__dirname, '../template')}`);
+    await cloneTemplate();
 
     // copy templatee里面的文件
     await shell.cp(path.resolve(__dirname, '../template/husky/commitlint.config.js'), process.cwd());
