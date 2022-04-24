@@ -76,7 +76,7 @@ module.exports = function () {
 
         // copy templatee里面的文件
         await shell.cp(path.resolve(__dirname, `../template/eslint/${isTs ? type + 'Ts' : type}/.eslintrc`), process.cwd());
-        await shell.cp(path.resolve(__dirname, '../template/eslint/build'), process.cwd());
+        await shell.cp(path.resolve(__dirname, '../template/eslint/build.sh'), process.cwd());
         await shell.cp(path.resolve(__dirname, '../template/eslint/.editorconfig'), process.cwd());
 
         await shell.cd(process.cwd());

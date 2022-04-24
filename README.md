@@ -1,7 +1,6 @@
-### 安装包
+### 安装包(安装前请将源切换至 <http://npm.tongdun.me/>)
 
 ``` javascript
-// 安装前请将源切换至 http://npm.tongdun.me/
 npm install @td/tdc -g
 ```
 
@@ -19,7 +18,7 @@ tdc -h
 
 ### tdc eslint
 
-- package.json 中新增exlint-fixed命令
+- package.json中新增exlint-fixed命令
 - 删除package.json中老的关于eslint的包
 - 增加新版eslint的依赖包(每次都会更新到最新的版本)
 - 增加pre-commit的钩子
@@ -28,7 +27,7 @@ tdc -h
   
 ### tdc husky
 
-- package.json 中新增prepare/changeLog命令
+- package.json中新增prepare/changeLog命令
 - 删除package.json中老的关于husky的包
 - 增加新版husky的依赖包(每次都会更新到最新的版本)
 - 增加commit-msg的钩子
