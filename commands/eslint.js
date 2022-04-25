@@ -49,7 +49,7 @@ const generatePackage = async function (pkj) {
 
     pkj['lint-staged'] = {
         'src/**/*.{js,jsx,ts,tsx}': [
-            'eslint --max-warnings 0 --fix --ext .js,.jsx,.ts,.tsx'
+            'eslint --fix --ext .js,.jsx,.ts,.tsx'
         ]
     };
 
