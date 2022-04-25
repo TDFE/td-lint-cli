@@ -49,7 +49,7 @@ const generatePackage = async function (pkj) {
 
     pkj['lint-staged'] = {
         'src/**/*.{js,jsx,ts,tsx}': [
-            'eslint --fix --ext .js,.jsx,.ts,.tsx'
+            'eslint --quiet --fix --ext .js,.jsx,.ts,.tsx'
         ]
     };
 
@@ -81,8 +81,9 @@ module.exports = function () {
 
         await shell.cd(process.cwd());
 
-        // 安装eslint需要删除node_modules 和 package-lock.json
+        // 安装eslint需要删除node_modules 和 package-lock.json 以及
         await shell.rm('-rf', 'package-lock.json');
+        await shell.rm('-rf', '.prettierrc');
         await shell.rm('-rf', 'node_modules');
 
         spinner.succeed('😄 初始化完成, 🤖️生成脚本');
