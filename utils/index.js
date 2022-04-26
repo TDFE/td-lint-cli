@@ -57,8 +57,17 @@ function getDependencies(dependencies = {}, deleteList, deleteKey) {
  * @param {*} addList 需要新增的包
  * @returns
  */
-async function getDevDependencies(devDependencies = {}, addList) {
+async function getDevDependencies(devDependencies = {}, addList, deleteKey) {
     const list = await Promise.all(addList.map(i => npm.repo(i).package()));
+
+    if (deleteKey) {
+        for (let key in devDependencies) {
+            // 删除deleteKey相关的包
+            if (key.includes(deleteKey)) {
+                delete devDependencies[key];
+            }
+        }
+    }
 
     addList.forEach((i, index) => {
         devDependencies[i] = `^${list[index].version}`;

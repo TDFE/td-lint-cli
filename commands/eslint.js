@@ -32,8 +32,8 @@ const question = [
  */
 const generatePackage = async function (pkj) {
     const newScript = getScripts(pkj.scripts, ['eslint-fixed']);
-    const newDependencies = getDependencies(pkj.dependencies, ['lint-staged']);
-    const newDevDependencies = await getDevDependencies(pkj.devDependencies, ['eslint', 'eslint-config-tongdun', 'eslint-plugin-td-rules-plugin', 'lint-staged']);
+    const newDependencies = getDependencies(pkj.dependencies, ['lint-staged'], 'eslint');
+    const newDevDependencies = await getDevDependencies(pkj.devDependencies, ['eslint', 'eslint-config-tongdun', 'eslint-plugin-td-rules-plugin', 'lint-staged'], 'eslint');
 
     if (newScript) {
         pkj.scripts = newScript;
