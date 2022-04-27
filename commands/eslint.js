@@ -76,8 +76,12 @@ module.exports = function () {
 
         // copy templatee里面的文件
         await shell.cp(path.resolve(__dirname, `../template/eslint/${isTs ? type + 'Ts' : type}/.eslintrc`), process.cwd());
-        await shell.cp(path.resolve(__dirname, '../template/eslint/build.sh'), process.cwd());
         await shell.cp(path.resolve(__dirname, '../template/eslint/.editorconfig'), process.cwd());
+
+        // 如果工程里面有build.sh文件
+        if(shell.test('-e', path.resolve(process.cwd(), './build.sh'))){
+            await shell.cp(path.resolve(__dirname, '../template/eslint/build.sh'), process.cwd());
+        }
 
         await shell.cd(process.cwd());
 
@@ -92,5 +96,9 @@ module.exports = function () {
         await shell.exec('npm i');
 
         spinner.succeed('安装完成');
+        shell.exit(0);
+    }).catch(e => {
+        console.log(e);
+        shell.exit(1);
     });
 };
