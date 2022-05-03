@@ -97,9 +97,25 @@ async function cloneTemplate() {
     });
 }
 
+/**
+ * 根据类型获取不同的配置
+ * @param {*} type js | vue | react
+ * @param {*} isTs boolean
+ * @returns string
+ */
+function getEslintPath(type, isTs) {
+    const mapPathByType = {
+        'js': isTs ? 'js' : 'ts',
+        'react': isTs ? 'reactTs' : 'react',
+        'vue': isTs ? 'vueTs' : 'vue'
+    };
+    return mapPathByType[type];
+}
+
 module.exports = {
     getScripts,
     getDependencies,
     getDevDependencies,
-    cloneTemplate
+    cloneTemplate,
+    getEslintPath
 };

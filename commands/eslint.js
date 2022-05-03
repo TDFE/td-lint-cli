@@ -4,26 +4,9 @@ const path = require('path');
 const shell = require('shelljs');
 const ora = require('ora');
 const { prompt } = require('inquirer');
+const { question } = require('../common');
 const spinner = ora('Loading undead unicorns');
-const { getScripts, getDependencies, getDevDependencies, cloneTemplate } = require('../utils');
-
-const question = [
-    {
-        type: 'list',
-        name: 'type',
-        message: '请选择类型:',
-        choices: ['react', 'vue']
-    },
-    {
-        type: 'confirm',
-        name: 'isTs',
-        message: '是否为ts项目',
-        default: false,
-        validate(val) {
-            return val;
-        }
-    }
-];
+const { getScripts, getDependencies, getDevDependencies, cloneTemplate, getEslintPath } = require('../utils');
 
 /**
  * 生成新的package.json
@@ -75,7 +58,7 @@ module.exports = function () {
         await cloneTemplate();
 
         // copy templatee里面的文件
-        await shell.cp(path.resolve(__dirname, `../template/eslint/${isTs ? type + 'Ts' : type}/.eslintrc`), process.cwd());
+        await shell.cp(path.resolve(__dirname, `../template/eslint/${getEslintPath(type, isTs)}/.eslintrc`), process.cwd());
         await shell.cp(path.resolve(__dirname, '../template/eslint/.editorconfig'), process.cwd());
 
         // 如果工程里面有build.sh文件
