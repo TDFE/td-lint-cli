@@ -105,7 +105,7 @@ async function cloneTemplate() {
  */
 function getEslintPath(type, isTs) {
     const mapPathByType = {
-        'js': isTs ? 'js' : 'ts',
+        'js': isTs ? 'ts' : 'js',
         'react': isTs ? 'reactTs' : 'react',
         'vue': isTs ? 'vueTs' : 'vue'
     };
