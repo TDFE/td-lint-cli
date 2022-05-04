@@ -34,15 +34,16 @@ function getScripts(scripts = {}, cliList) {
  * @param {*} deleteKey 有这个key的包就要删除
  * @returns
  */
-function getDependencies(dependencies = {}, deleteList, deleteKey) {
+function getDependencies(dependencies = {}, deleteList, deleteKeys) {
     deleteList.forEach(i => {
         delete dependencies[i];
     });
 
-    if (deleteKey) {
+    if (Array.isArray(deleteKeys)) {
         for (let key in dependencies) {
             // 删除deleteKey相关的包
-            if (key.includes(deleteKey)) {
+            const nendDel = deleteKeys.some(i => key.includes(i));
+            if (nendDel) {
                 delete dependencies[key];
             }
         }
@@ -55,15 +56,17 @@ function getDependencies(dependencies = {}, deleteList, deleteKey) {
  * 重新生成devDependencies
  * @param {*} devDependencies 老的package.json里面的devDependencies
  * @param {*} addList 需要新增的包
+ * @param {*} deleteKeys 需要删除的包
  * @returns
  */
-async function getDevDependencies(devDependencies = {}, addList, deleteKey) {
+async function getDevDependencies(devDependencies = {}, addList, deleteKeys) {
     const list = await Promise.all(addList.map(i => npm.repo(i).package()));
 
-    if (deleteKey) {
+    if (Array.isArray(deleteKeys)) {
         for (let key in devDependencies) {
             // 删除deleteKey相关的包
-            if (key.includes(deleteKey)) {
+            const nendDel = deleteKeys.some(i => key.includes(i));
+            if (nendDel) {
                 delete devDependencies[key];
             }
         }

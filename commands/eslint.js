@@ -11,12 +11,20 @@ const { getScripts, getDependencies, getDevDependencies, cloneTemplate, getEslin
 /**
  * 生成新的package.json
  * @param {*} pkj 老的package.json
+ * @param {*} isTs 是否为ts
  * @returns
  */
-const generatePackage = async function (pkj) {
+const generatePackage = async function (pkj, isTs) {
+    const tsArr = ['typescript', '@types/node', '@types/react', '@types/react-dom', '@types/jest'];
+    // dependencies需要删除的包
+    const dependenciesNeedDel = ['lint-staged'].concat(isTs ? tsArr : []);
+    // 需要删除的关键词
+    const needDelKey = ['eslint'].concat(isTs ? tsArr : []);
+    // devDependencies需要增加的包
+    const devDependenciesNeedAdd = ['eslint', 'eslint-config-tongdun', 'eslint-plugin-td-rules-plugin', 'lint-staged'].concat(isTs ? tsArr : []);
     const newScript = getScripts(pkj.scripts, ['eslint-fixed']);
-    const newDependencies = getDependencies(pkj.dependencies, ['lint-staged'], 'eslint');
-    const newDevDependencies = await getDevDependencies(pkj.devDependencies, ['eslint', 'eslint-config-tongdun', 'eslint-plugin-td-rules-plugin', 'lint-staged'], 'eslint');
+    const newDependencies = getDependencies(pkj.dependencies, dependenciesNeedDel, needDelKey);
+    const newDevDependencies = await getDevDependencies(pkj.devDependencies, devDependenciesNeedAdd, needDelKey);
 
     if (newScript) {
         pkj.scripts = newScript;
@@ -50,7 +58,7 @@ module.exports = function () {
         }
         // 重写package.json
         const packageJSON = JSON.parse(str);
-        const newPackage = await generatePackage(packageJSON);
+        const newPackage = await generatePackage(packageJSON, isTs);
         fs.writeFileSync(path.resolve(process.cwd(), './package.json'), JSON.stringify(newPackage, null, 4));
 
         // 获取最新的template

@@ -13,8 +13,8 @@ const { getScripts, getDependencies, getDevDependencies, cloneTemplate } = requi
  */
 const generatePackage = async function (pkj) {
     const newScript = getScripts(pkj.scripts, ['prepare', 'changeLog']);
-    const newDependencies = getDependencies(pkj.dependencies, ['commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky']);
-    const newDevDependencies = await getDevDependencies(pkj.devDependencies, ['@commitlint/cli', '@commitlint/config-conventional', 'commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky']);
+    const newDependencies = getDependencies(pkj.dependencies, ['commitizen', 'cz-customizable', 'cz-conventional-changelog', ['husky']]);
+    const newDevDependencies = await getDevDependencies(pkj.devDependencies, ['@commitlint/cli', '@commitlint/config-conventional', 'commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky'], ['husky']);
 
     if (newScript && Object.keys(newScript).length >= 1) {
         pkj.scripts = newScript;
