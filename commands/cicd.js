@@ -32,7 +32,7 @@ module.exports = function () {
 
         // copy templatee cicd里面的文件
         await shell.cp('-R', path.resolve(__dirname, `../template/cicd/${type}/`), process.cwd() + '/');
-
+        spinner.start('🚀 cicd配置 初始化成功');
         shell.exit(0);
     }).catch(e => {
         console.log(e);
