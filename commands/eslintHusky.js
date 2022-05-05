@@ -72,8 +72,7 @@ module.exports = function () {
             await cloneTemplate();
 
             // copy templatee里面的文件
-            await shell.cp(path.resolve(__dirname, '../template/husky/commitlint.config.js'), process.cwd());
-            await shell.cp(path.resolve(__dirname, '../template/husky/.cz-config.js'), process.cwd());
+            await shell.cp('-R', [path.resolve(__dirname, '../template/husky/*'), path.resolve(__dirname, '../template/husky/.*')], process.cwd());
             await shell.cp(path.resolve(__dirname, `../template/eslint/${getEslintPath(type, isTs)}/.eslintrc`), process.cwd());
             await shell.cp(path.resolve(__dirname, '../template/eslint/.editorconfig'), process.cwd());
             // 如果工程里面有build.sh文件 并且非node项目
@@ -91,12 +90,7 @@ module.exports = function () {
             spinner.succeed('😄 初始化完成, 🤖️生成脚本');
             spinner.start('正在执行npm install');
 
-            await shell.exec('npm i --registry=https://registry.npmmirror.com/');
-
-            await shell.exec('npm run prepare');
-            await shell.cp(path.resolve(__dirname, '../template/husky/commit-msg'), '.husky');
-            await shell.cp(path.resolve(__dirname, '../template/husky/pre-commit'), '.husky');
-            await shell.cp(path.resolve(__dirname, '../template/husky/prepare-commit-msg'), '.husky');
+            await shell.exec('npm i');
 
             spinner.succeed('安装完成');
             shell.exit(0);

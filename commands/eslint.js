@@ -84,7 +84,7 @@ module.exports = function () {
         spinner.succeed('😄 初始化完成, 🤖️生成脚本');
         spinner.start('正在执行npm install');
 
-        await shell.exec('npm i --registry=https://registry.npmmirror.com/');
+        await shell.exec('npm i');
 
         spinner.succeed('安装完成');
         shell.exit(0);
