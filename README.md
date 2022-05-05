@@ -40,3 +40,6 @@ tdc -h
 ### tdc cicd
 
 - 增加cicd的配置（区分node/nginx）
+
+### 注意事项
+如果权限非管理员的话，所有命令之前都需要增加 sudo,例如sudo tdc cicd
