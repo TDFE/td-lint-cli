@@ -54,7 +54,7 @@ const generatePackage = async function (pkj, isTs) {
 
 module.exports = function () {
     prompt(question).then(async ({ type, isTs }) => {
-        try{
+        try {
             spinner.start('🚀 husky & eslint配置 初始化中');
             const str = fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf-8');
 
@@ -75,10 +75,6 @@ module.exports = function () {
             await shell.cp('-R', [path.resolve(__dirname, '../template/husky/*'), path.resolve(__dirname, '../template/husky/.*')], process.cwd());
             await shell.cp(path.resolve(__dirname, `../template/eslint/${getEslintPath(type, isTs)}/.eslintrc`), process.cwd());
             await shell.cp(path.resolve(__dirname, '../template/eslint/.editorconfig'), process.cwd());
-            // 如果工程里面有build.sh文件 并且非node项目
-            if(shell.test('-e', path.resolve(process.cwd(), './build.sh')) && !shell.test('-e', path.resolve(process.cwd(), './pm2.json'))){
-                await shell.cp(path.resolve(__dirname, '../template/eslint/build.sh'), process.cwd());
-            }
 
             await shell.cd(process.cwd());
 
@@ -93,8 +89,15 @@ module.exports = function () {
             await shell.exec('npm i');
 
             spinner.succeed('安装完成');
+
+            // 增加hook 钩子
+            await shell.exec('npm run prepare');
+            await shell.cp(path.resolve(__dirname, '../template/husky/commit-msg'), '.husky');
+            await shell.cp(path.resolve(__dirname, '../template/husky/pre-commit'), '.husky');
+            await shell.cp(path.resolve(__dirname, '../template/husky/prepare-commit-msg'), '.husky');
+
             shell.exit(0);
-        }catch(error){
+        } catch (error) {
             console.log(error);
             shell.exit(1);
         }
