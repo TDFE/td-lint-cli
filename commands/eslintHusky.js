@@ -91,7 +91,7 @@ module.exports = function () {
             spinner.succeed('😄 初始化完成, 🤖️生成脚本');
             spinner.start('正在执行npm install');
 
-            await shell.exec('npm i');
+            await shell.exec('npm i --registry=https://registry.npmmirror.com/');
 
             await shell.exec('npm run prepare');
             await shell.cp(path.resolve(__dirname, '../template/husky/commit-msg'), '.husky');

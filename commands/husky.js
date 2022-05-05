@@ -64,7 +64,7 @@ module.exports = async function () {
         spinner.succeed('😄 初始化完成, 🤖️生成脚本');
         spinner.start('正在执行npm install');
 
-        await shell.exec('npm i');
+        await shell.exec('npm i --registry=https://registry.npmmirror.com/');
 
         // 执行git hook
         await shell.exec('npm run prepare');

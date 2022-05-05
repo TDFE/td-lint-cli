@@ -31,7 +31,7 @@ module.exports = function () {
         fs.writeFileSync(filePath, str.replace(/\${APPNAME}/g, name));
 
         // copy templatee cicd里面的文件
-        await shell.cp('-R', path.resolve(__dirname, `../template/cicd/${type}/`), process.cwd() + '/');
+        await shell.cp('-R', path.resolve(__dirname, `../template/cicd/${type}/*`), process.cwd());
         spinner.succeed('😄 初始化完成, 🤖️生成脚本');
         shell.exit(0);
     }).catch(e => {
