@@ -74,6 +74,7 @@ module.exports = function () {
         // 安装eslint需要删除node_modules 和 package-lock.json 以及
         await shell.rm('-rf', 'package-lock.json');
         await shell.rm('-rf', '.prettierrc');
+        await shell.rm('-rf', '.eslintrc.js');
         await shell.rm('-rf', 'node_modules');
 
         spinner.succeed('😄 初始化完成, 🤖️生成脚本');
