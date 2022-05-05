@@ -16,6 +16,10 @@ tdc --version
 tdc -h
 ```
 
+### tdc eslintHusky
+
+- 执行eslint & husky命令的功能
+
 ### tdc eslint
 
 - package.json中新增exlint-fixed命令
@@ -33,6 +37,6 @@ tdc -h
 - 增加commit-msg的钩子
 - 重新install
   
-### tdc all
+### tdc cicd
 
-- 执行eslint & husky命令的功能
+- 增加cicd的配置（区分node/nginx）

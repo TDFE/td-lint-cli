@@ -1,6 +1,6 @@
 {
     "name": "@td/tdc",
-    "version": "1.0.6bate-0.0.1",
+    "version": "1.0.7",
     "description": "ci 工具初始化",
     "main": "index.js",
     "bin": {

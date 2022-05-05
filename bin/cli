@@ -9,9 +9,9 @@ const res = command => path.resolve(__dirname, '../commands/', command);
 program.version(chalk.green(`${pkg.version}`));
 
 program
-    .command('all')
-    .description('项目添加husky/eslint配置')
-    .alias('a')
+    .command('eslintHusky')
+    .description('项目添加eslint/husky配置')
+    .alias('eh')
     .action(() => {
         require(res('all'))();
     });
@@ -30,6 +30,14 @@ program
     .alias('e')
     .action(() => {
         require(res('eslint'))();
+    });
+
+program
+    .command('cicd')
+    .description('项目添加cicd配置')
+    .alias('c')
+    .action(() => {
+        require(res('cicd'))();
     });
 
 program.parse(process.argv);

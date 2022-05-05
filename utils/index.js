@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const download = require('download-git-repo');
 const Npm = require('npm-api');
@@ -115,10 +116,19 @@ function getEslintPath(type, isTs) {
     return mapPathByType[type];
 }
 
+/**
+ * 获取当前项目名
+ */
+function getCurPackjsonName() {
+    const pkg = fs.readFileSync(process.cwd() + '/package.json', 'utf-8');
+    return JSON.parse(pkg).name;
+}
+
 module.exports = {
     getScripts,
     getDependencies,
     getDevDependencies,
     cloneTemplate,
-    getEslintPath
+    getEslintPath,
+    getCurPackjsonName
 };
