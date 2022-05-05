@@ -76,8 +76,8 @@ module.exports = function () {
             await shell.cp(path.resolve(__dirname, '../template/husky/.cz-config.js'), process.cwd());
             await shell.cp(path.resolve(__dirname, `../template/eslint/${getEslintPath(type, isTs)}/.eslintrc`), process.cwd());
             await shell.cp(path.resolve(__dirname, '../template/eslint/.editorconfig'), process.cwd());
-            // 如果工程里面有build.sh文件
-            if(shell.test('-e', path.resolve(process.cwd(), './build.sh'))){
+            // 如果工程里面有build.sh文件 并且非node项目
+            if(shell.test('-e', path.resolve(process.cwd(), './build.sh')) && !shell.test('-e', path.resolve(process.cwd(), './pm2.json'))){
                 await shell.cp(path.resolve(__dirname, '../template/eslint/build.sh'), process.cwd());
             }
 

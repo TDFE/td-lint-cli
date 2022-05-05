@@ -13,7 +13,7 @@ program
     .description('项目添加eslint/husky配置')
     .alias('eh')
     .action(() => {
-        require(res('all'))();
+        require(res('eslintHusky'))();
     });
 
 program
