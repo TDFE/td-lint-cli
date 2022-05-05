@@ -69,9 +69,6 @@ module.exports = async function () {
 
         // 增加hook 钩子
         await shell.exec('npm run prepare');
-        await shell.cp(path.resolve(__dirname, '../template/husky/commit-msg'), '.husky');
-        await shell.cp(path.resolve(__dirname, '../template/husky/pre-commit'), '.husky');
-        await shell.cp(path.resolve(__dirname, '../template/husky/prepare-commit-msg'), '.husky');
 
         shell.exit(0);
     } catch (error) {
