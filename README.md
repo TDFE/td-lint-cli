@@ -1,7 +1,7 @@
 ### 安装包(安装前请将源切换至 <http://npm.tongdun.me/>)
 
 ``` javascript
-npm install @td/tdmc -g
+npm install tdmc -g
 ```
 
 ### 查看是否安装成功

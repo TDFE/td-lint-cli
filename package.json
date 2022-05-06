@@ -1,5 +1,5 @@
 {
-    "name": "@td/tdmc",
+    "name": "tdmc",
     "version": "1.0.0",
     "description": "ci 工具初始化",
     "main": "index.js",
@@ -44,5 +44,17 @@
         "src/**/*.{js,jsx,ts,tsx}": [
             "eslint --max-warnings 0 --fix --ext .js,.jsx,.ts,.tsx"
         ]
-    }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/TDFE/td-lint-cli.git"
+    },
+    "keywords": [
+        "同盾ci",
+        "工具初始化"
+    ],
+    "bugs": {
+        "url": "https://github.com/TDFE/td-lint-cli/issues"
+    },
+    "homepage": "https://github.com/TDFE/td-lint-cli#readme"
 }
