@@ -4,7 +4,7 @@ const question = [
         type: 'list',
         name: 'type',
         message: '请选择类型:',
-        choices: ['react', 'vue', 'js']
+        choices: ['react', 'vue', 'es6', 'node']
     },
     {
         type: 'confirm',
