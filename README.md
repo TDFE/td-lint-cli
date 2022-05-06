@@ -26,7 +26,6 @@ tdmc -h
 - 删除package.json中老的关于eslint的包
 - 增加新版eslint的依赖包(每次都会更新到最新的版本)
 - 增加pre-commit的钩子
-- 修改build.sh文件，增加打包校验eslint
 - 重新install
   
 ### tdmc husky
