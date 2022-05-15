@@ -18,9 +18,9 @@ const generatePackage = async function (pkj, isTs) {
     // dependencies需要删除的包
     const dependenciesNeedDel = ['commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky', 'lint-staged'].concat(isTs ? tsArr : []);
     // 需要删除的关键词
-    const needDelKey = ['eslint'].concat(isTs ? tsArr : []);
+    const needDelKey = ['eslint', 'husky', 'conventional-changelog-cli'].concat(isTs ? tsArr : []);
     // devDependencies需要增加的包
-    const devDependenciesNeedAdd = ['@commitlint/cli', '@commitlint/config-conventional', 'commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky', 'eslint', 'eslint-config-tongdun', 'eslint-plugin-td-rules-plugin', 'lint-staged'].concat(isTs ? tsArr : []);
+    const devDependenciesNeedAdd = ['@commitlint/cli', '@commitlint/config-conventional', 'commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky', 'eslint', 'eslint-config-tongdun', 'eslint-plugin-td-rules-plugin', 'lint-staged', 'conventional-changelog-cli', 'husky'].concat(isTs ? tsArr : []);
 
     const newScript = getScripts(pkj.scripts, ['prepare', 'changeLog', 'eslint-fixed']);
     const newDependencies = getDependencies(pkj.dependencies, dependenciesNeedDel, needDelKey);

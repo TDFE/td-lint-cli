@@ -3,15 +3,17 @@ module.exports = {
     types: [
         { value: 'feat', name: '✨ feat:新增产品功能' },
         { value: 'fix', name: '🐛 fix:修复 bug' },
-        { value: 'revert', name: '🚑 revert:回滚commit' },
-        { value: 'style', name: 'style:   修改格式（空格，格式化，省略分号等），对代码运行没有影响' },
-        { value: 'chore', name: 'chore:   对构建过程或辅助工具和库（如文档生成）的更改' },
-        { value: 'refactor', name: 'refactor:重构（既不是修 bug ，也不是加功能）' },
-        { value: 'build', name: 'build:   构建流程、外部依赖变更，比如升级 npm 包、修改 webpack 配置等' },
-        { value: 'docs', name: 'docs:    仅修改文档' },
-        { value: 'perf', name: 'perf:    性能优化' },
-        { value: 'test', name: 'test:    测试相关' },
-        { value: 'ci', name: '🤖 ci:修改了CI配置、脚本' }
+        { value: 'style', name: '💄 style:更新UI和样式文件(不影响代码运行的变动)' },
+        { value: 'merge', name: '🔀 merge:分支合并' },
+        { value: 'linter', name: '🚨 linter:移除linter警告' },
+        { value: 'build', name: '🔧 build:构建流程、外部依赖变更，比如升级 npm 包、修改 webpack 配置等' },
+        { value: 'ci', name: '🤖️ ci:修改了CI配置、脚本' },
+        { value: 'tag', name: '🔖 tag:发行/版本标签' },
+        { value: 'chore', name: '👷 chore:对构建过程或辅助工具和库（如文档生成）的更改' },
+        { value: 'refactor', name: '🔨 refactor:重构（既不是修 bug ，也不是加功能）' },
+        { value: 'docs', name: '📕 docs:仅修改文档' },
+        { value: 'perf', name: '⚡️ perf:性能优化' },
+        { value: 'test', name: '☑️  test:测试相关' }
     ],
     // scope 类型，针对 React 项目
     // scopes: [],
@@ -38,4 +40,4 @@ module.exports = {
     // breaklineChar: '|', // 支持 body 和 footer
     // footerPrefix : 'ISSUES CLOSED:'
     // askForBreakingChangeFirst : true,
-};
+  };

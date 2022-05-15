@@ -13,8 +13,8 @@ const { getScripts, getDependencies, getDevDependencies, cloneTemplate } = requi
  */
 const generatePackage = async function (pkj) {
     const newScript = getScripts(pkj.scripts, ['prepare', 'changeLog']);
-    const newDependencies = getDependencies(pkj.dependencies, ['commitizen', 'cz-customizable', 'cz-conventional-changelog', ['husky']]);
-    const newDevDependencies = await getDevDependencies(pkj.devDependencies, ['@commitlint/cli', '@commitlint/config-conventional', 'commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky'], ['husky']);
+    const newDependencies = getDependencies(pkj.dependencies, ['commitizen', 'cz-customizable', 'cz-conventional-changelog', ['husky', 'conventional-changelog-cli']]);
+    const newDevDependencies = await getDevDependencies(pkj.devDependencies, ['@commitlint/cli', '@commitlint/config-conventional', 'commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky', 'conventional-changelog-cli'], []);
 
     if (newScript && Object.keys(newScript).length >= 1) {
         pkj.scripts = newScript;
@@ -54,6 +54,9 @@ module.exports = async function () {
         // 获取最新的template
         await shell.rm('-rf', path.resolve(__dirname, '../template'));
         await cloneTemplate();
+
+        // 先删除pre-commit这个钩子
+        await shell.rm('-rf', path.resolve(__dirname, '../template/husky/.husky/pre-commit'));
 
         // copy templatee里面的文件
         await shell.cp('-R', [path.resolve(__dirname, '../template/husky/*'), path.resolve(__dirname, '../template/husky/.*')], process.cwd());

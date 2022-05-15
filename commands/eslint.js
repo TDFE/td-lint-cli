@@ -15,13 +15,13 @@ const { getScripts, getDependencies, getDevDependencies, cloneTemplate, getEslin
  * @returns
  */
 const generatePackage = async function (pkj, isTs) {
-    const tsArr = ['typescript', '@types/node', '@types/react', '@types/react-dom', '@types/jest'];
+    const tsArr = isTs ? ['typescript', '@types/node', '@types/react', '@types/react-dom', '@types/jest'] : [];
     // dependencies需要删除的包
-    const dependenciesNeedDel = ['lint-staged'].concat(isTs ? tsArr : []);
+    const dependenciesNeedDel = ['lint-staged', 'husky'].concat(tsArr);
     // 需要删除的关键词
-    const needDelKey = ['eslint'].concat(isTs ? tsArr : []);
+    const needDelKey = ['eslint', 'husky'].concat(tsArr);
     // devDependencies需要增加的包
-    const devDependenciesNeedAdd = ['eslint', 'eslint-config-tongdun', 'eslint-plugin-td-rules-plugin', 'lint-staged'].concat(isTs ? tsArr : []);
+    const devDependenciesNeedAdd = ['eslint', 'eslint-config-tongdun', 'eslint-plugin-td-rules-plugin', 'lint-staged', 'husky'].concat([...tsArr]);
     const newScript = getScripts(pkj.scripts, ['eslint-fixed']);
     const newDependencies = getDependencies(pkj.dependencies, dependenciesNeedDel, needDelKey);
     const newDevDependencies = await getDevDependencies(pkj.devDependencies, devDependenciesNeedAdd, needDelKey);
@@ -64,6 +64,19 @@ module.exports = function () {
         // 获取最新的template
         await shell.rm('-rf', path.resolve(__dirname, '../template'));
         await cloneTemplate();
+        // 如果工程里面有husky目录
+        const hasHusky = shell.test('-e', path.resolve(process.cwd(), './.husky'));
+        if(hasHusky) {
+            // 增加一个钩子
+            await shell.cp(path.resolve(__dirname, '../template/husky/.husky/pre-commit'), process.cwd() + '/.husky');
+
+        }else {
+            // 先删除prepare-commit-msg 和 commit-msg这2个钩子
+            await shell.rm('-rf', path.resolve(__dirname, '../template/husky/.husky/commit-msg'));
+            await shell.rm('-rf', path.resolve(__dirname, '../template/husky/.husky/prepare-commit-msg'));
+            // 复制.husky目录过去
+            await shell.cp('-R', [path.resolve(__dirname, '../template/husky/*'), path.resolve(__dirname, '../template/husky/.*')], process.cwd());
+        }
 
         // copy templatee里面的文件
         await shell.cp(path.resolve(__dirname, `../template/eslint/${getEslintPath(type, isTs)}/.eslintrc`), process.cwd());

@@ -8,15 +8,17 @@ module.exports = {
             [
                 'feat', // 新功能（feature）
                 'fix', // 修补bug
-                'ci',
                 'style',
+                'merge',
+                'linter',
+                'build',
+                'ci',
+                'tag',
                 'chore',
                 'refactor',
-                'build',
-                'docs',
+                'docs', // feat(pencil): add ‘graphiteWidth’ option (撤销之前的commit)
                 'perf',
-                'test',
-                'revert' // feat(pencil): add ‘graphiteWidth’ option (撤销之前的commit)
+                'test'
             ]
         ],
         'type-case': [0],
