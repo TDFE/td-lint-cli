@@ -1,3 +1,11 @@
+<!--
+ * @Author: zyj yongjian.zheng@tongdun.me
+ * @Date: 2022-04-29 15:24:35
+ * @LastEditors: zyj yongjian.zheng@tongdun.me
+ * @LastEditTime: 2022-05-16 10:18:44
+ * @FilePath: /td-lint-cli/README.md
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
 ### 安装包(安装前请将源切换至 <http://npm.tongdun.me/>)
 
 ``` javascript
@@ -41,4 +49,4 @@ tdmc -h
 - 增加cicd的配置（区分node/nginx）
 
 ### 注意事项
-如果权限非管理员的话，所有命令之前都需要增加 sudo,例如sudo tdmc cicd
+如果权限非管理员的话，请将电脑设置为管理员权限
