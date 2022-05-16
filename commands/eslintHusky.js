@@ -61,7 +61,7 @@ const generatePackage = async function (pkj, isTs) {
     pkj['lint-staged'] = {
         'src/**/*.{js,jsx,ts,tsx}': ['eslint --quiet --fix --ext .js,.jsx,.ts,.tsx']
     };
-
+    delete pkj.husky;
     return pkj;
 };
 

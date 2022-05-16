@@ -51,6 +51,8 @@ const generatePackage = async function (pkj) {
         }
     };
 
+    delete pkj.husky;
+
     return pkj;
 };
 
