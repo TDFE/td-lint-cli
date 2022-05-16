@@ -21,6 +21,7 @@
                 "jsxBracketSameLine": true, // jsx 标签的反尖括号需要换行
                 "trailingComma": "none" // 末尾不需要逗号
             }
-        ]
+        ],
+        "require-atomic-updates": 0
     }
 }

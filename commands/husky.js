@@ -13,8 +13,25 @@ const { getScripts, getDependencies, getDevDependencies, cloneTemplate } = requi
  */
 const generatePackage = async function (pkj) {
     const newScript = getScripts(pkj.scripts, ['prepare', 'changeLog']);
-    const newDependencies = getDependencies(pkj.dependencies, ['commitizen', 'cz-customizable', 'cz-conventional-changelog', ['husky', 'conventional-changelog-cli']]);
-    const newDevDependencies = await getDevDependencies(pkj.devDependencies, ['@commitlint/cli', '@commitlint/config-conventional', 'commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky', 'conventional-changelog-cli'], []);
+    const newDependencies = getDependencies(pkj.dependencies, [
+        'commitizen',
+        'cz-customizable',
+        'cz-conventional-changelog',
+        ['husky', 'conventional-changelog-cli']
+    ]);
+    const newDevDependencies = await getDevDependencies(
+        pkj.devDependencies,
+        [
+            '@commitlint/cli',
+            '@commitlint/config-conventional',
+            'commitizen',
+            'cz-customizable',
+            'cz-conventional-changelog',
+            'husky',
+            'conventional-changelog-cli'
+        ],
+        []
+    );
 
     if (newScript && Object.keys(newScript).length >= 1) {
         pkj.scripts = newScript;
@@ -29,8 +46,8 @@ const generatePackage = async function (pkj) {
     }
 
     pkj['config'] = {
-        'commitizen': {
-            'path': './node_modules/cz-customizable'
+        commitizen: {
+            path: './node_modules/cz-customizable'
         }
     };
 
@@ -59,7 +76,11 @@ module.exports = async function () {
         await shell.rm('-rf', path.resolve(__dirname, '../template/husky/.husky/pre-commit'));
 
         // copy templatee里面的文件
-        await shell.cp('-R', [path.resolve(__dirname, '../template/husky/*'), path.resolve(__dirname, '../template/husky/.*')], process.cwd());
+        await shell.cp(
+            '-R',
+            [path.resolve(__dirname, '../template/husky/*'), path.resolve(__dirname, '../template/husky/.*')],
+            process.cwd()
+        );
 
         await shell.cd(process.cwd());
 

@@ -16,11 +16,26 @@ const { getScripts, getDependencies, getDevDependencies, cloneTemplate, getEslin
 const generatePackage = async function (pkj, isTs) {
     const tsArr = ['typescript', '@types/node', '@types/react', '@types/react-dom', '@types/jest'];
     // dependencies需要删除的包
-    const dependenciesNeedDel = ['commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky', 'lint-staged'].concat(isTs ? tsArr : []);
+    const dependenciesNeedDel = ['commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky', 'lint-staged'].concat(
+        isTs ? tsArr : []
+    );
     // 需要删除的关键词
     const needDelKey = ['eslint', 'husky', 'conventional-changelog-cli'].concat(isTs ? tsArr : []);
     // devDependencies需要增加的包
-    const devDependenciesNeedAdd = ['@commitlint/cli', '@commitlint/config-conventional', 'commitizen', 'cz-customizable', 'cz-conventional-changelog', 'husky', 'eslint', 'eslint-config-tongdun', 'eslint-plugin-td-rules-plugin', 'lint-staged', 'conventional-changelog-cli', 'husky'].concat(isTs ? tsArr : []);
+    const devDependenciesNeedAdd = [
+        '@commitlint/cli',
+        '@commitlint/config-conventional',
+        'commitizen',
+        'cz-customizable',
+        'cz-conventional-changelog',
+        'husky',
+        'eslint',
+        'eslint-config-tongdun',
+        'eslint-plugin-td-rules-plugin',
+        'lint-staged',
+        'conventional-changelog-cli',
+        'husky'
+    ].concat(isTs ? tsArr : []);
 
     const newScript = getScripts(pkj.scripts, ['prepare', 'changeLog', 'eslint-fixed']);
     const newDependencies = getDependencies(pkj.dependencies, dependenciesNeedDel, needDelKey);
@@ -39,14 +54,12 @@ const generatePackage = async function (pkj, isTs) {
     }
 
     pkj['config'] = {
-        'commitizen': {
-            'path': './node_modules/cz-customizable'
+        commitizen: {
+            path: './node_modules/cz-customizable'
         }
     };
     pkj['lint-staged'] = {
-        'src/**/*.{js,jsx,ts,tsx}': [
-            'eslint --quiet --fix --ext .js,.jsx,.ts,.tsx'
-        ]
+        'src/**/*.{js,jsx,ts,tsx}': ['eslint --quiet --fix --ext .js,.jsx,.ts,.tsx']
     };
 
     return pkj;
@@ -72,7 +85,11 @@ module.exports = function () {
             await cloneTemplate();
 
             // copy templatee里面的文件
-            await shell.cp('-R', [path.resolve(__dirname, '../template/husky/*'), path.resolve(__dirname, '../template/husky/.*')], process.cwd());
+            await shell.cp(
+                '-R',
+                [path.resolve(__dirname, '../template/husky/*'), path.resolve(__dirname, '../template/husky/.*')],
+                process.cwd()
+            );
             await shell.cp(path.resolve(__dirname, `../template/eslint/${getEslintPath(type, isTs)}/.eslintrc`), process.cwd());
             await shell.cp(path.resolve(__dirname, '../template/eslint/.editorconfig'), process.cwd());
 
