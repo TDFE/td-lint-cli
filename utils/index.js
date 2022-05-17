@@ -3,6 +3,7 @@ const path = require('path');
 const download = require('download-git-repo');
 const Npm = require('npm-api');
 const shell = require('shelljs');
+const { mapVersion } = require('../common/index');
 
 const npm = new Npm();
 
@@ -14,12 +15,12 @@ const npm = new Npm();
  */
 function getScripts(scripts = {}, cliList) {
     const mapCli = {
-        'prepare': 'husky install',
-        'changeLog': 'rm -rf CHANGELOG.md && conventional-changelog -p angular -i CHANGELOG.md -s',
+        prepare: 'husky install',
+        changeLog: 'rm -rf CHANGELOG.md && conventional-changelog -p angular -i CHANGELOG.md -s',
         'eslint-fixed': 'npx eslint --max-warnings 0 --fix --ext .js,.jsx,.ts,.tsx ./src'
     };
 
-    cliList.forEach(i => {
+    cliList.forEach((i) => {
         if (Object.keys(mapCli).includes(i)) {
             scripts[i] = mapCli[i];
         }
@@ -36,14 +37,14 @@ function getScripts(scripts = {}, cliList) {
  * @returns
  */
 function getDependencies(dependencies = {}, deleteList, deleteKeys) {
-    deleteList.forEach(i => {
+    deleteList.forEach((i) => {
         delete dependencies[i];
     });
 
     if (Array.isArray(deleteKeys)) {
         for (let key in dependencies) {
             // 删除deleteKey相关的包
-            const nendDel = deleteKeys.some(i => key.includes(i));
+            const nendDel = deleteKeys.some((i) => key.includes(i));
             if (nendDel) {
                 delete dependencies[key];
             }
@@ -61,12 +62,12 @@ function getDependencies(dependencies = {}, deleteList, deleteKeys) {
  * @returns
  */
 async function getDevDependencies(devDependencies = {}, addList, deleteKeys) {
-    const list = await Promise.all(addList.map(i => npm.repo(i).package()));
+    const list = await Promise.all(addList.map((i) => npm.repo(i).package()));
 
     if (Array.isArray(deleteKeys)) {
         for (let key in devDependencies) {
             // 删除deleteKey相关的包
-            const nendDel = deleteKeys.some(i => key.includes(i));
+            const nendDel = deleteKeys.some((i) => key.includes(i));
             if (nendDel) {
                 delete devDependencies[key];
             }
@@ -74,7 +75,17 @@ async function getDevDependencies(devDependencies = {}, addList, deleteKeys) {
     }
 
     addList.forEach((i, index) => {
-        devDependencies[i] = `^${list[index].version}`;
+        // 远程的最高版本
+        const originBigVersion = list[index].version && list[index].version[0];
+        // 本地的最高版本
+        const localBigVersion = mapVersion[i] ? mapVersion[i][0] : -1;
+        let version = list[index].version;
+
+        if (localBigVersion !== -1) {
+            version = localBigVersion === originBigVersion ? list[index].version : mapVersion[i];
+        }
+
+        devDependencies[i] = `^${version}`;
     });
 
     return devDependencies;
@@ -109,9 +120,9 @@ async function cloneTemplate() {
  */
 function getEslintPath(type, isTs) {
     const mapPathByType = {
-        'js': isTs ? 'ts' : 'js',
-        'react': isTs ? 'reactTs' : 'react',
-        'vue': isTs ? 'vueTs' : 'vue'
+        js: isTs ? 'ts' : 'js',
+        react: isTs ? 'reactTs' : 'react',
+        vue: isTs ? 'vueTs' : 'vue'
     };
     return mapPathByType[type];
 }
