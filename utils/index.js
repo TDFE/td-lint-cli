@@ -15,6 +15,7 @@ const npm = new Npm();
  */
 function getScripts(scripts = {}, cliList) {
     const mapCli = {
+        vite: 'vite',
         prepare: 'husky install',
         changeLog: 'rm -rf CHANGELOG.md && conventional-changelog -p angular -i CHANGELOG.md -s',
         'eslint-fixed': 'npx eslint --max-warnings 0 --fix --ext .js,.jsx,.ts,.tsx ./src'

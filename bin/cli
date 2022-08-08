@@ -4,7 +4,7 @@ const program = require('commander');
 const chalk = require('chalk');
 const pkg = require('../package');
 
-const res = command => path.resolve(__dirname, '../commands/', command);
+const res = (command) => path.resolve(__dirname, '../commands/', command);
 
 program.version(chalk.green(`${pkg.version}`));
 
@@ -38,6 +38,14 @@ program
     .alias('c')
     .action(() => {
         require(res('cicd'))();
+    });
+
+program
+    .command('vite')
+    .description('项目添加vite配置')
+    .alias('v')
+    .action(() => {
+        require(res('vite'))();
     });
 
 program.parse(process.argv);
