@@ -42,10 +42,10 @@ program
 
 program
     .command('vite')
-    .description('项目添加vite配置')
+    .description('项目启动vite')
     .alias('v')
     .action(() => {
-        require(res('vite'))();
+        require(res('vite/index.js'))();
     });
 
 program.parse(process.argv);
