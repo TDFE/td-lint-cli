@@ -1,6 +1,6 @@
 {
     "name": "tdmc",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "description": "ci 工具初始化",
     "main": "index.js",
     "bin": {

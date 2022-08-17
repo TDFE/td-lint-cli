@@ -1,4 +1,4 @@
-### 安装包(安装前请将源切换至 <http://npm.tongdun.me/>)
+### 安装包
 
 ``` javascript
 npm install tdmc -g
