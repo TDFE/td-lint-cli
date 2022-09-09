@@ -45,8 +45,8 @@ tdmc -h
 - 在根目录下创建vite.config.js文件（如果不需要特殊配置可以不创建）,配置如下，其他配置参考vite官方文档
 ``` javascript
 module.exports = {
-    htmlPath: './src/index.html', // html的地址,默认为'./src/index.html'
-    entriesPath: '/src/app.js' // 入口js文件，默认为'/src/app.js'
+    plugins: [],
+    resolve: []
 };
 ```
 - proxy默认会取build/config.js的proxyTable和port

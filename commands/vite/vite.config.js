@@ -10,19 +10,24 @@ const { merge } = require('lodash');
 
 const urlPath = process.cwd();
 
-// 读取webpack的配置
+// 读取webpack config的配置
 const buildConfig = require(path.resolve(urlPath, './build/config.js'));
-const { proxyTable, port } = buildConfig.dev || {};
+const { proxyTable, port } = (buildConfig && buildConfig.dev) || {};
+const { htmlTemplatePath } = (buildConfig && buildConfig.common) || {};
+// 转换为相对路径
+const relativeHtmlTemplatePath = htmlTemplatePath ? htmlTemplatePath.replace(process.cwd(), '.') : '';
+
+// 读取webpack.base.config.js的配置
+const webpackBaseConfig = require(path.resolve(urlPath, './build/webpack.base.conf.js'));
+const entriesPath = (webpackBaseConfig && webpackBaseConfig.entry && webpackBaseConfig.entry.app) || '';
 
 // 自定义配置
 let customSet = {};
 try {
     customSet = require(path.resolve(urlPath, './vite.config.js'));
 } catch (e) {
-    console.info('当前项目无特殊配置');
+    console.log('当前项目无特殊配置,如需配属配置请在根目录新建vite.config.js文件,配置请参考https://cn.vitejs.dev/guide/');
 }
-
-const { htmlPath, entriesPath, ...customSetRest } = customSet;
 
 let proxy = {};
 
@@ -62,8 +67,8 @@ const defaultSet = {
             React: 'react'
         }),
         tdViteTransformReact({
-            htmlPath: htmlPath || './src/index.html', // html的地址
-            entriesPath: entriesPath || '/src/app.js' // 入口js文件
+            htmlPath: relativeHtmlTemplatePath || './src/index.html', // html的地址
+            entriesPath: entriesPath ? (entriesPath[0] === '.' ? entriesPath.substring(1, entriesPath.length) : entriesPath) : '/src/app.js' // 入口js文件
         }),
         react({
             jsxRuntime: 'classic',
@@ -172,4 +177,4 @@ const defaultSet = {
     }
 };
 
-module.exports = defineConfig(merge(defaultSet, customSetRest));
+module.exports = defineConfig(merge(defaultSet, customSet));
