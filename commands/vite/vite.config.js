@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const { defineConfig } = require('vite');
 const react = require('@vitejs/plugin-react');
@@ -14,8 +15,16 @@ const urlPath = process.cwd();
 const buildConfig = require(path.resolve(urlPath, './build/config.js'));
 const { proxyTable, port } = (buildConfig && buildConfig.dev) || {};
 const { htmlTemplatePath } = (buildConfig && buildConfig.common) || {};
+
 // 转换为相对路径
-const relativeHtmlTemplatePath = htmlTemplatePath ? htmlTemplatePath.replace(process.cwd(), '.') : '';
+let relativeHtmlTemplatePath = htmlTemplatePath ? htmlTemplatePath.replace(process.cwd(), '.') : '';
+
+// 如果是ejs结尾的入口
+if (htmlTemplatePath && htmlTemplatePath.includes('.ejs')) {
+    const str = fs.readFileSync(relativeHtmlTemplatePath, 'utf-8');
+    fs.writeFileSync(path.resolve(process.cwd(), './node_modules/.vite/index.html'), str, 'utf-8');
+    relativeHtmlTemplatePath = './node_modules/.vite/index.html';
+}
 
 // 读取webpack.base.config.js的配置
 const webpackBaseConfig = require(path.resolve(urlPath, './build/webpack.base.conf.js'));

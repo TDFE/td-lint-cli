@@ -1,6 +1,6 @@
 {
     "name": "tdmc",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "ci 工具初始化",
     "main": "index.js",
     "bin": {
@@ -31,7 +31,7 @@
         "postcss-modules": "4.3.1",
         "vite": "3.0.3",
         "vite-plugin-imp": "2.2.0",
-        "vite-plugin-tongdun-transform": "^1.0.3"
+        "vite-plugin-tongdun-transform": "^1.0.4"
     },
     "devDependencies": {
         "@commitlint/cli": "^16.3.0",
