@@ -99,17 +99,17 @@ module.exports = function () {
             await shell.rm('-rf', 'package-lock.json');
             await shell.rm('-rf', '.prettierrc');
             await shell.rm('-rf', '.eslintrc.js');
-            await shell.rm('-rf', 'node_modules');
+            // await shell.rm('-rf', 'node_modules');
 
-            spinner.succeed('😄 初始化完成, 🤖️生成脚本');
-            spinner.start('正在执行npm install');
+            spinner.succeed('😄 初始化完成, 请手动npm install进行安装');
+            // spinner.start('正在执行npm install');
 
-            await shell.exec('npm i');
+            // await shell.exec('npm i');
 
-            spinner.succeed('安装完成');
+            // spinner.succeed('安装完成');
 
-            // 增加hook 钩子
-            await shell.exec('npm run prepare');
+            // // 增加hook 钩子
+            // await shell.exec('npm run prepare');
 
             shell.exit(0);
         } catch (error) {
