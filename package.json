@@ -1,6 +1,6 @@
 {
     "name": "tdmc",
-    "version": "1.0.10",
+    "version": "1.0.11",
     "description": "ci 工具初始化",
     "main": "index.js",
     "bin": {
@@ -15,36 +15,39 @@
     "author": "zefei.zhou",
     "license": "ISC",
     "dependencies": {
-        "chalk": "^4.1.2",
-        "commander": "^9.1.0",
-        "download-git-repo": "^3.0.2",
-        "inquirer": "^8.2.2",
-        "npm-api": "^1.0.1",
-        "ora": "^5.4.1",
-        "shelljs": "^0.8.5",
         "@originjs/vite-plugin-commonjs": "1.0.3",
         "@rollup/plugin-inject": "4.0.4",
         "@vitejs/plugin-legacy": "2.0.1",
         "@vitejs/plugin-react": "2.0.1",
         "babel-plugin-import": "^1.13.3",
+        "chalk": "^4.1.2",
+        "commander": "^9.1.0",
+        "download-git-repo": "^3.0.2",
+        "fast-glob": "^3.2.12",
+        "inquirer": "^8.2.2",
         "lodash": "^4.17.21",
+        "npm-api": "^1.0.1",
+        "ora": "^5.4.1",
         "postcss-modules": "4.3.1",
+        "shelljs": "^0.8.5",
         "vite": "3.0.3",
         "vite-plugin-imp": "2.2.0",
-        "vite-plugin-tongdun-transform": "^1.0.4"
+        "vite-plugin-tongdun-transform": "^1.0.4",
+        "webpack": "^5.75.0",
+        "webpack-merge": "^4.2.1"
     },
     "devDependencies": {
         "@commitlint/cli": "^16.3.0",
         "@commitlint/config-conventional": "^16.2.4",
         "commitizen": "^4.2.4",
+        "conventional-changelog-cli": "^2.2.2",
         "cz-conventional-changelog": "^3.3.0",
         "cz-customizable": "^6.3.0",
-        "lint-staged": "^12.4.1",
-        "husky": "^8.0.1",
         "eslint": "^8.15.0",
         "eslint-config-tongdun": "^1.1.10",
         "eslint-plugin-td-rules-plugin": "^1.0.1",
-        "conventional-changelog-cli": "^2.2.2"
+        "husky": "^8.0.1",
+        "lint-staged": "^12.4.1"
     },
     "config": {
         "commitizen": {
