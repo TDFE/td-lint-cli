@@ -51,5 +51,9 @@ module.exports = {
 ```
 - proxy默认会取build/config.js的proxyTable和port
 
+### tdmc slim
+
+- 删除工程内未被引用的文件
+
 ### 注意事项
 如果权限非管理员的话，请将电脑设置为管理员权限

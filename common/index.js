@@ -33,6 +33,19 @@ const getCiCdQuest = (defaultName) => [
     }
 ];
 
+// silm 提问内容
+const slimQuest = [
+    {
+        type: 'confirm',
+        name: 'isDel',
+        message: '是否自动删除',
+        default: false,
+        validate(val) {
+            return val;
+        }
+    }
+];
+
 // 包的版本
 const mapVersion = {
     '@commitlint/cli': '17.0.0',
@@ -55,6 +68,7 @@ const mapVersion = {
 
 module.exports = {
     question,
+    slimQuest,
     getCiCdQuest,
     mapVersion
 };
