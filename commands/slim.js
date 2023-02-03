@@ -9,12 +9,6 @@ const ora = require('ora');
 const { slimQuest } = require('../common');
 const spinner = ora('Loading undead unicorns');
 
-const baseWebpackConfig = require(`${process.cwd()}/build/webpack.base.conf`);
-
-const args = process.argv.splice(2)[1] || 'src';
-
-const allFiles = fg.sync([`${process.cwd()}/${args}/**/*.*`]);
-
 const filterFiles = ['src/index.ejs', 'src/index.js'];
 
 class Slim {
@@ -29,20 +23,7 @@ class Slim {
                 }
                 return total;
             }, []);
-
-            if (Array.isArray(allFiles)) {
-                const unUsedFiles = allFiles.reduce((total, item) => {
-                    if (!usedFiles.includes(item) && !filterFiles.some((fileName) => item.includes(fileName))) {
-                        total.push(item);
-                    }
-                    return total;
-                }, []);
-
-                if (unUsedFiles.length) {
-                    compilation.warnings = ['以下文件文件没有被采用，请确认是否需要删除'].concat(unUsedFiles);
-                }
-            }
-
+            compilation.warnings = usedFiles;
             callback();
         });
     }
@@ -50,7 +31,10 @@ class Slim {
 
 module.exports = function () {
     try {
-        prompt(slimQuest).then(async ({ isDel }) => {
+        prompt(slimQuest).then(async ({ isDel, webpackPath, dirName }) => {
+            const baseWebpackConfig = require(`${process.cwd()}/${webpackPath}`);
+            const allFiles = fg.sync([`${process.cwd()}/${dirName}/**/*.*`]);
+
             spinner.start('正在查询依赖，可能会花费数分钟，请稍后');
             webpack(
                 merge(lodash.pick(baseWebpackConfig, ['entry', 'resolve', 'module']), {
@@ -63,30 +47,38 @@ module.exports = function () {
                         spinner.stop('错误');
                         return;
                     }
-                    const info = stats.toJson();
-
                     if (stats.hasWarnings()) {
-                        const warns = [];
-                        if (Array.isArray(info.warnings)) {
-                            info.warnings.forEach((i) => {
-                                warns.push(i.message && i.message.replace(`${process.cwd()}/`, ''));
+                        const info = stats.toJson();
+                        let unUsedFiles = [];
+                        const usedFiles = Array.isArray(info.warnings) ? info.warnings.map((i) => i.message) : [];
+                        if (Array.isArray(allFiles)) {
+                            unUsedFiles = allFiles.reduce((total, item) => {
+                                if (!usedFiles.includes(item) && !filterFiles.some((fileName) => item.includes(fileName))) {
+                                    total.push(item);
+                                }
+                                return total;
+                            }, []);
+                        }
+
+                        if (Array.isArray(unUsedFiles)) {
+                            console.warn('以下文件文件没有被采用，请确认是否需要删除');
+                            unUsedFiles.forEach((i) => {
+                                console.warn(i.replace(`${process.cwd()}/`, ''));
                                 if (isDel) {
-                                    shell.rm('-rf', i.message);
+                                    shell.rm('-rf', i);
                                 }
                             });
+                            spinner.succeed(`完成查找,共计${unUsedFiles.length}个`);
                         }
-                        const str = warns.join('\n');
-                        console.warn(str);
-                        spinner.succeed(`完成查找,共计${warns.length - 1}个`);
-
                         return;
                     }
+                    spinner.succeed('搜索完毕');
                     console.log('当前src目录下所有文件都已经被使用');
                 }
             );
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         shell.exit(1);
     }
 };

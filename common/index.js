@@ -36,6 +36,18 @@ const getCiCdQuest = (defaultName) => [
 // silm 提问内容
 const slimQuest = [
     {
+        type: 'input',
+        name: 'dirName',
+        message: '请输入需要检测的目录,比如src/component,默认为src',
+        default: 'src'
+    },
+    {
+        type: 'input',
+        name: 'webpackPath',
+        message: '请输入webpack配置所在位置,默认为build/webpack.base.conf',
+        default: 'build/webpack.base.conf'
+    },
+    {
         type: 'confirm',
         name: 'isDel',
         message: '是否自动删除',
