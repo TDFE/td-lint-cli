@@ -9,7 +9,7 @@ const ora = require('ora');
 const { slimQuest } = require('../common');
 const spinner = ora('Loading undead unicorns');
 
-const filterFiles = ['src/index.ejs', 'src/index.js'];
+const filterFiles = ['src/index.ejs', 'src/index.js', 'src/index.html'];
 
 class Slim {
     apply(compiler) {
