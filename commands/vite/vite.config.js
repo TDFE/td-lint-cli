@@ -132,6 +132,7 @@ const defaultSet = {
         alias: [
             { find: '@', replacement: path.resolve(urlPath, 'src') },
             { find: /^~@tntd/, replacement: path.resolve(urlPath, 'node_modules/@tntd/') },
+            { find: /^~tntd/, replacement: path.resolve(urlPath, 'node_modules/tntd/') },
             {
                 find: 'react-draggable',
                 replacement: path.resolve(urlPath, 'node_modules/react-draggable/build/web/react-draggable.min.js')
@@ -314,7 +315,7 @@ const defaultSet = {
             plugins: [
                 require('postcss-modules')({
                     scopeBehaviour: 'global',
-                    getJSON: () => { }
+                    getJSON: () => {}
                 })
             ]
         }
