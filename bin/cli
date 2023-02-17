@@ -48,4 +48,12 @@ program
         require(res('vite/index.js'))();
     });
 
+program
+    .command('slim')
+    .description('去除项目中的无用文件')
+    .alias('s')
+    .action(() => {
+        require(res('slim'))();
+    });
+
 program.parse(process.argv);
