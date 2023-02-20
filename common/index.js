@@ -67,7 +67,7 @@ const mapVersion = {
     'cz-conventional-changelog': '3.3.0',
     husky: '8.0.1',
     eslint: '8.15.0',
-    'eslint-config-tongdun': '1.1.10',
+    'eslint-config-tongdun': '1.1.11',
     'eslint-plugin-td-rules-plugin': '1.0.1',
     'lint-staged': '12.4.1',
     'conventional-changelog-cli': '2.2.2',

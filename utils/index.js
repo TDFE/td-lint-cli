@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const download = require('download-git-repo');
-const Npm = require('npm-api');
+// const Npm = require('npm-api');
 const shell = require('shelljs');
 const { mapVersion } = require('../common/index');
 
-const npm = new Npm();
+// const npm = new Npm();
 
 /**
  * 重新生成scripts
@@ -63,7 +63,7 @@ function getDependencies(dependencies = {}, deleteList, deleteKeys) {
  * @returns
  */
 async function getDevDependencies(devDependencies = {}, addList, deleteKeys) {
-    const list = await Promise.all(addList.map((i) => npm.repo(i).package()));
+    // const list = await Promise.all(addList.map((i) => npm.repo(i).package()));
 
     if (Array.isArray(deleteKeys)) {
         for (let key in devDependencies) {
@@ -74,19 +74,18 @@ async function getDevDependencies(devDependencies = {}, addList, deleteKeys) {
             }
         }
     }
-
     addList.forEach((i, index) => {
-        // 远程的最高版本
-        const originBigVersion = list[index].version && list[index].version[0];
+        // // 远程的最高版本
+        // const originBigVersion = list[index].version && list[index].version[0];
         // 本地的最高版本
-        const localBigVersion = mapVersion[i] ? mapVersion[i][0] : -1;
-        let version = list[index].version;
+        // const localBigVersion = mapVersion[i] ? mapVersion[i][0] : -1;
+        // let version = list[index].version;
 
-        if (localBigVersion !== -1) {
-            version = localBigVersion === originBigVersion ? list[index].version : mapVersion[i];
-        }
+        // if (localBigVersion !== -1) {
+        //     version = localBigVersion === originBigVersion ? list[index].version : mapVersion[i];
+        // }
 
-        devDependencies[i] = `^${version}`;
+        devDependencies[i] = `^${mapVersion[i]}`;
     });
 
     return devDependencies;
