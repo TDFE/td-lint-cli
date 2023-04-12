@@ -56,4 +56,12 @@ program
         require(res('slim'))();
     });
 
+program
+    .command('slim-package')
+    .description('去除package中无效的依赖')
+    .alias('sp')
+    .action(() => {
+        require(res('slimPackage'))();
+    });
+
 program.parse(process.argv);
