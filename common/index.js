@@ -58,6 +58,24 @@ const slimQuest = [
     }
 ];
 
+const slimPackageQuest = [
+    {
+        type: 'input',
+        name: 'webpackPath',
+        message: '请输入webpack配置所在位置,默认为build/webpack.base.conf',
+        default: 'build/webpack.base.conf'
+    },
+    {
+        type: 'confirm',
+        name: 'isDel',
+        message: '是否自动删除',
+        default: false,
+        validate(val) {
+            return val;
+        }
+    }
+];
+
 // 包的版本
 const mapVersion = {
     '@commitlint/cli': '17.0.0',
@@ -81,6 +99,7 @@ const mapVersion = {
 module.exports = {
     question,
     slimQuest,
+    slimPackageQuest,
     getCiCdQuest,
     mapVersion
 };
