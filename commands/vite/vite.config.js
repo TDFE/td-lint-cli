@@ -10,6 +10,8 @@ const inject = require('@rollup/plugin-inject');
 const { merge } = require('lodash');
 
 const urlPath = process.cwd();
+const args = process.argv.slice(2);
+const version = args[1];
 
 // 读取webpack config的配置
 const buildConfig = require(path.resolve(urlPath, './build/config.js'));
@@ -140,7 +142,8 @@ const defaultSet = {
             // 不添加会报props.oneOf错误
             { find: 'react-resizable', replacement: path.resolve(urlPath, 'node_modules/react-resizable/dist/bundle.js') },
             // 因为history包console里面有 history%s 会被esbuild误认为包
-            { find: 'history/createHashHistory', replacement: path.resolve(urlPath, 'node_modules/history/es/createHashHistory.js') }
+            { find: 'history/createHashHistory', replacement: path.resolve(urlPath, 'node_modules/history/es/createHashHistory.js') },
+            { find: 'tntd', replacement: path.resolve(urlPath, version ? `node_modules/tntd-${version}/` : 'node_modules/tntd/') }
         ]
     },
     define: {
