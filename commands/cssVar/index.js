@@ -13,17 +13,23 @@ const spinner = ora('Loading undead unicorns');
  * 获取css的替换信息
  * @returns
  */
-const getCssVarKeyMap = () => {
-    let addJson;
+const getCssVarKeyMap = (defaultConf) => {
+    let addJson = '{}';
+    let lowJson = {};
     try {
         const cssVarJson = path.resolve(process.cwd(), './cssVar.json');
-        addJson = fs.readFileSync(cssVarJson, 'utf-8');
-    } catch (e) {
-        addJson = '{}';
-    }
+        if (fs.existsSync(cssVarJson)) {
+            addJson = fs.readFileSync(cssVarJson, 'utf-8');
+        }
 
-    const cssVarKeys = merge(defaultConf, JSON.parse(addJson || {}));
-    return cssVarKeys;
+        for (let i in defaultConf) {
+            lowJson[i.toLowerCase()] = defaultConf[i];
+        }
+        const cssVarKeys = merge(lowJson, JSON.parse(addJson));
+        return cssVarKeys;
+    } catch (e) {
+        return lowJson;
+    }
 };
 
 /**
@@ -101,7 +107,7 @@ module.exports = function () {
             let list = [];
             spinner.start('🚀 开始抽取');
             // 需要转换的key
-            const cssVarKeys = getCssVarKeyMap();
+            const cssVarKeys = getCssVarKeyMap(defaultConf);
             updateLessFiles(path.resolve(process.cwd(), goalPath), cssVarKeys, list);
             spinner.succeed('😄 抽取完成, 🤖️');
             spinner.start('🚀 开始替换');
