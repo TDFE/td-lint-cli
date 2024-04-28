@@ -58,6 +58,16 @@ const slimQuest = [
     }
 ];
 
+// cssvar 提问内容
+const cssVarQuest = [
+    {
+        type: 'input',
+        name: 'goalPath',
+        message: '请输入需要提取css变量的路径',
+        default: './src'
+    }
+];
+
 const slimPackageQuest = [
     {
         type: 'input',
@@ -101,5 +111,6 @@ module.exports = {
     slimQuest,
     slimPackageQuest,
     getCiCdQuest,
-    mapVersion
+    mapVersion,
+    cssVarQuest
 };

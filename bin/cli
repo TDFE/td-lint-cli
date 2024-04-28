@@ -64,4 +64,12 @@ program
         require(res('slimPackage'))();
     });
 
+program
+    .command('css-var')
+    .description('抽取css变量')
+    .alias('cv')
+    .action(() => {
+        require(res('cssVar/index.js'))();
+    });
+
 program.parse(process.argv);

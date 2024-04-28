@@ -134,7 +134,7 @@ const defaultSet = {
         alias: [
             { find: '@', replacement: path.resolve(urlPath, 'src') },
             { find: /^~@tntd/, replacement: path.resolve(urlPath, 'node_modules/@tntd/') },
-            { find: /^~tntd/, replacement: path.resolve(urlPath, 'node_modules/tntd/') },
+            { find: /^~tntd/, replacement: path.resolve(urlPath, version ? `node_modules/tntd-${version}/` : 'node_modules/tntd/') },
             {
                 find: 'react-draggable',
                 replacement: path.resolve(urlPath, 'node_modules/react-draggable/build/web/react-draggable.min.js')
@@ -310,7 +310,7 @@ const defaultSet = {
             less: {
                 javascriptEnabled: true,
                 modifyVars: {
-                    hack: 'true; @import "~@tntd/antd-cover/tnt.less";'
+                    hack: 'true; @import "~tntd/themes/default/variables.less";'
                 }
             }
         },
