@@ -72,4 +72,13 @@ program
         require(res('cssVar/index.js'))();
     });
 
+program
+    .command('cursor')
+    .description('生成cursor规则')
+    .alias('cs')
+    .action(() => {
+        require(res('cursor.js'))();
+    });
+
+
 program.parse(process.argv);
