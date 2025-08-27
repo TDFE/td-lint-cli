@@ -53,7 +53,11 @@ module.exports = function () {
                         const usedFiles = Array.isArray(info.warnings) ? info.warnings.map((i) => i.message) : [];
                         if (Array.isArray(allFiles)) {
                             unUsedFiles = allFiles.reduce((total, item) => {
-                                if (!usedFiles.includes(item) && !filterFiles.some((fileName) => item.includes(fileName))) {
+                                if (
+                                    !usedFiles.includes(item) &&
+                                    !filterFiles.some((fileName) => item.includes(fileName)) &&
+                                    item.endsWith('.js')
+                                ) {
                                     total.push(item);
                                 }
                                 return total;
