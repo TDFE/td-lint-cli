@@ -80,5 +80,12 @@ program
         require(res('cursor.js'))();
     });
 
+program
+    .command('removeI18N')
+    .description('打包去掉代码中的I18N')
+    .alias('rI')
+    .action(() => {
+        require(res('removeI18N.js'))();
+    });
 
 program.parse(process.argv);
