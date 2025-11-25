@@ -3,7 +3,7 @@
  * @Author: 郑泳健
  * @Date: 2025-11-25 18:31:23
  * @LastEditors: 郑泳健
- * @LastEditTime: 2025-11-25 18:32:57
+ * @LastEditTime: 2025-11-25 19:58:12
  */
 const fs = require('fs');
 const path = require('path');
@@ -42,13 +42,21 @@ function getAllJsFiles(dirs) {
  * @returns {string[]} import 来源数组
  */
 function extractImports(files) {
-    const importRegex = /import\s+(?:[\s\S]+?)\s+from\s+['"]([^'"]+)['"]/g;
-    let imports = [];
+    const imports = [];
 
     files.forEach((file) => {
         const content = fs.readFileSync(file, 'utf-8');
+
+        // 1. 匹配 import xx from 'yy'
+        const importFromRegex = /import\s+(?:[\s\S]+?)\s+from\s+['"]([^'"]+)['"]/g;
         let match;
-        while ((match = importRegex.exec(content)) !== null) {
+        while ((match = importFromRegex.exec(content)) !== null) {
+            imports.push(match[1]);
+        }
+
+        // 2. 匹配 import 'yy' 这种不带 from 的
+        const importOnlyRegex = /import\s+['"]([^'"]+)['"]/g;
+        while ((match = importOnlyRegex.exec(content)) !== null) {
             imports.push(match[1]);
         }
     });

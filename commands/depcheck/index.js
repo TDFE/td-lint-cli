@@ -30,7 +30,7 @@ module.exports = async function () {
         } else {
             const list = result.map((i) => {
                 const version = packageLockMap[`node_modules/${i}`]?.version;
-                return '"' + i + '": ' + '"^' + version + '"';
+                return '"' + i + '": ' + '"' + version + '"';
             });
             console.log(list.join(',\n'));
             spinner.succeed('幽灵依赖检查完成, 请添加以上内容至工程package.json中');
