@@ -88,4 +88,12 @@ program
         require(res('removeI18N.js'))();
     });
 
+program
+    .command('depcheck')
+    .description('查找项目中的幽灵依赖')
+    .alias('dep')
+    .action(() => {
+        require(res('depcheck.js'))();
+    });
+
 program.parse(process.argv);
