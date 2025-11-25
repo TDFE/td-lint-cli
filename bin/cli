@@ -93,7 +93,7 @@ program
     .description('查找项目中的幽灵依赖')
     .alias('dep')
     .action(() => {
-        require(res('depcheck.js'))();
+        require(res('depcheck/index.js'))();
     });
 
 program.parse(process.argv);
