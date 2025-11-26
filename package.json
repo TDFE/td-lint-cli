@@ -1,6 +1,6 @@
 {
     "name": "tdmc",
-    "version": "1.2.10",
+    "version": "1.2.11",
     "description": "ci 工具初始化",
     "main": "index.js",
     "bin": {
@@ -15,6 +15,7 @@
     "author": "zefei.zhou",
     "license": "ISC",
     "dependencies": {
+        "@npmcli/arborist": "^9.1.8",
         "@originjs/vite-plugin-commonjs": "1.0.3",
         "@rollup/plugin-inject": "4.0.4",
         "@vitejs/plugin-legacy": "2.0.1",

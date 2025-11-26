@@ -11,15 +11,11 @@ const spinner = ora('Loading undead unicorns');
 const resolve = (dir) => path.resolve(process.cwd(), dir);
 
 module.exports = async function () {
-    if (!fs.existsSync(path.resolve(process.cwd(), 'package-lock.json'))) {
-        console.log('请先执行npm i, 生成package-lock.json文件');
-        return;
-    }
     spinner.start('🚀 开始检查幽灵依赖\n');
     try {
         const dirsToScan = [resolve('./src'), resolve('./modules')]; // 你要扫描的目录
         const packageDev = Object.keys(JSON.parse(fs.readFileSync(resolve('./package.json'), 'utf-8'))?.dependencies);
-        const { packageLockList, packageLockMap } = getPackageLockDep();
+        const { packageLockList, packageLockMap } = await getPackageLockDep();
         const importModules = getProjectImport(dirsToScan);
         const result = packageLockList.filter((i) => {
             return importModules.includes(i) && !packageDev.includes(i);
