@@ -96,4 +96,12 @@ program
         require(res('depcheck/index.js'))();
     });
 
+program
+    .command('diffverion')
+    .description('对比package-lock和pnpm-lock.yaml的区别')
+    .alias('dv')
+    .action(() => {
+        require(res('diffverion/index.js'))();
+    });
+
 program.parse(process.argv);
