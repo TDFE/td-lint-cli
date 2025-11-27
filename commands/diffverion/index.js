@@ -86,10 +86,10 @@ module.exports = async function () {
         const pnpmDeps = await getPnpmPackageLockDep(fileContent);
         const result = diffJson(packageLockMap, pnpmDeps);
 
-        fs.writeFileSync(resolve('diff2.js'), JSON.stringify(packageLockMap, null, 2));
-        fs.writeFileSync(resolve('diff3.js'), JSON.stringify(pnpmDeps, null, 2));
-        fs.writeFileSync(resolve('diff1.js'), JSON.stringify(result, null, 2));
-        spinner.succeed('完成对比，具体请在diff.js中查看');
+        fs.writeFileSync(resolve('npm.js'), JSON.stringify(packageLockMap, null, 2));
+        fs.writeFileSync(resolve('pnpm.js'), JSON.stringify(pnpmDeps, null, 2));
+        fs.writeFileSync(resolve('npmDiffPnpm.js'), JSON.stringify(result, null, 2));
+        spinner.succeed('完成对比，具体请在npmDiffPnpm.js中查看差异');
     } catch (err) {
         console.error('对比失败:', err);
         shell.exit(0);
