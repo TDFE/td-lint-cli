@@ -103,12 +103,4 @@ program
     .action(() => {
         require(res('diffverion/index.js'))();
     });
-
-program
-    .command('findIcon')
-    .description('查找icon的名称')
-    .alias('fI')
-    .action(() => {
-        require(res('findIcon/index.js'))();
-    });
 program.parse(process.argv);
