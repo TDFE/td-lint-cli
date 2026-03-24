@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 const path = require('path');
+const { Option } = require('commander');
 const program = require('commander');
 const chalk = require('chalk');
 const pkg = require('../package');
@@ -100,7 +101,30 @@ program
     .command('diffverion')
     .description('对比package-lock和pnpm-lock.yaml的区别')
     .alias('dv')
+    .addOption(new Option('-d, --dir <dir>', '源码目录').default('src'))
+    .addOption(new Option('-r, --router <router>', '路由配置文件路径'))
     .action(() => {
         require(res('diffverion/index.js'))();
     });
+
+program
+    .command('find-regex')
+    .description('查找目录下正则中同时含有中英文的匹配项')
+    .alias('fr')
+    .addOption(new Option('-d, --dir <dir>', '源码目录').default('src'))
+    .action(async (options) => {
+        require(res('findRegex/index.js'))(options);
+    });
+
+program
+    .command('regex')
+    .description('查找项目中英文正则修改点')
+    .alias('re')
+    .addOption(new Option('-d, --dir <dir>', '源码目录').default('src'))
+    .addOption(new Option('-v, --validator <name>', '要查找的 validator 名称').default('validatorName'))
+    .addOption(new Option('-e, --entry <name>', '只分析包含指定名称的入口页面'))
+    .action(async (options) => {
+        require(res('regex/index.js'))(options);
+    });
+
 program.parse(process.argv);

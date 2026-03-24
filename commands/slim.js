@@ -32,9 +32,10 @@ class Slim {
 module.exports = function () {
     try {
         prompt(slimQuest).then(async ({ isDel, webpackPath, dirName }) => {
-            const baseWebpackConfig = require(`${process.cwd()}/${webpackPath}`);
+            let baseWebpackConfig = require(`${process.cwd()}/${webpackPath}`);
             const allFiles = fg.sync([`${process.cwd()}/${dirName}/**/*.*`]);
-
+            baseWebpackConfig.module =
+                typeof baseWebpackConfig.module === 'function' ? baseWebpackConfig.module(true) : baseWebpackConfig.module;
             spinner.start('正在查询依赖，可能会花费数分钟，请稍后');
             webpack(
                 merge(lodash.pick(baseWebpackConfig, ['entry', 'resolve', 'module']), {
