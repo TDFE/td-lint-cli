@@ -103,8 +103,8 @@ function buildPageLink(pageName, routePath, routerPrefix, esc) {
     if (!routePath) return label;
     const prefix = routerPrefix.replace(/\/$/, '');
     const rp = routePath.startsWith('/') ? routePath : '/' + routePath;
-    const url = `https://zhice.tcloud.tongdun.cn${prefix}${rp}`;
-    return `<span>${label}<a class="page-link" href="${url}" target="_blank" rel="noopener">点击跳转</a></span>`;
+    const fullPath = `${prefix}${rp}`;
+    return `<span>${label}<button class="page-link" onclick="copyToClipboard(this, '${esc(fullPath.replace(/'/g, "\\'"))}')">复制路径</button></span>`;
 }
 
 // ── 正则提取 ──────────────────────────────────────────────────────────────
@@ -253,6 +253,83 @@ function hasEnglish(str) {
     return /[a-zA-Z]/.test(str);
 }
 
+// 正则翻译：将正则模式翻译成中文
+function translateRegex(pattern) {
+    if (!pattern) return '';
+    let result = pattern;
+
+    // 先处理转义字符
+    const escapes = {
+        '\\d': '数字',
+        '\\D': '非数字',
+        '\\w': '单词字符',
+        '\\W': '非单词字符',
+        '\\s': '空白字符',
+        '\\S': '非空白字符',
+        '\\b': '单词边界',
+        '\\B': '非单词边界',
+        '\\n': '换行',
+        '\\r': '回车',
+        '\\t': '制表符',
+        '\\.': '点号',
+        '\\^': '脱字符',
+        '\\$': '美元符',
+        '\\*': '星号',
+        '\\+': '加号',
+        '\\?': '问号',
+        '\\|': '或',
+        '\\(': '左括号',
+        '\\)': '右括号',
+        '\\[': '左方括号',
+        '\\]': '右方括号',
+        '\\{': '左花括号',
+        '\\}': '右花括号',
+        '\\/': '斜杠',
+        '\\\\': '反斜杠',
+    };
+
+    for (const [esc, zh] of Object.entries(escapes)) {
+        result = result.split(esc).join(zh);
+    }
+
+    // 处理字符类 [abc]
+    result = result.replace(/\[([^\]]*)\]/g, (_, chars) => {
+        return `包含[${chars}]中任意一个`;
+    });
+
+    // 处理量词
+    result = result.replace(/\*/g, ' (零个或多个)');
+    result = result.replace(/\+/g, ' (一个或多个)');
+    result = result.replace(/\?/g, ' (零个或一个)');
+    result = result.replace(/\{(\d+)(?:,(\d*))?\}/g, (_, a, b) => {
+        if (b === undefined) return ` (恰好${a}次)`;
+        if (b === '') return ` (至少${a}次)`;
+        return ` (${a}到${b}次)`;
+    });
+
+    // 处理锚点
+    result = result.replace(/\^/g, ' (行首)');
+    result = result.replace(/\$/g, ' (行尾)');
+
+    // 处理分组
+    result = result.replace(/\(([^)]*)\)/g, (_, group) => {
+        if (group.startsWith('?:')) return `非捕获组`;
+        if (group.startsWith('?=')) return '正向先行';
+        if (group.startsWith('?!')) return '负向先行';
+        if (group.startsWith('?<=')) return '正向后行';
+        if (group.startsWith('?<!')) return '负向后行';
+        return `组${group}`;
+    });
+
+    // 处理或 |
+    result = result.replace(/\|/g, ' 或 ');
+
+    // 处理点号
+    result = result.replace(/\./g, '任意字符');
+
+    return result;
+}
+
 function walkDir(dir, extensions) {
     const results = [];
     let entries;
@@ -312,9 +389,12 @@ function buildTableRows(items, pageNameMap, routerPrefix, esc) {
                 pageCell = `<td class="page"${spanAttr}>${buildPageLink(row.pageName, row.routePath, routerPrefix, esc)}</td>`;
             }
             const matchesHtml = row.matches
-                .map((m) => `<div class="match"><span class="line">L${m.line}</span><code>${esc(m.display)}</code></div>`)
+                .map((m) => {
+                    const translation = translateRegex(m.pattern);
+                    return `<div class="match"><span class="line">L${m.line}</span><code>${esc(m.display)}</code><span class="translation">${esc(translation)}</span></div>`;
+                })
                 .join('');
-            return `<tr>\n      <td class="file">${esc(row.file)}</td>\n      ${pageCell}\n      <td class="matches">${matchesHtml}</td>\n    </tr>`;
+            return `<tr>\n      <td class="file" title="${esc(row.file)}">${esc(row.file)}<button class="copy-btn" onclick="copyToClipboard(this, '${esc(row.file.replace(/'/g, "\\'"))}')">复制</button></td>\n      ${pageCell}\n      <td class="matches">${matchesHtml}</td>\n    </tr>`;
         })
         .join('\n    ');
 
@@ -380,16 +460,30 @@ function generateHtml(all, bilingual, pageNameMap, routerPrefix) {
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover td { background: #f7f9ff; }
 
-  td.file { font-family: 'SF Mono', Consolas, monospace; font-size: 12px; color: #555; white-space: nowrap; max-width: 360px; overflow: hidden; text-overflow: ellipsis; }
+  td.file { font-family: 'SF Mono', Consolas, monospace; font-size: 12px; color: #555; width: 20%; max-width: 20%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; position: relative; }
+  .copy-btn { position: absolute; right: 4px; top: 50%; transform: translateY(-50%); background: #e0e0e0; border: none; border-radius: 3px; padding: 2px 6px; font-size: 10px; cursor: pointer; color: #555; }
+  .copy-btn:hover { background: #ccc; }
+  .copy-btn.copied { background: #4caf50; color: #fff; }
   td.page { white-space: nowrap; }
   .page-badge { display: inline-block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; border-radius: 6px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
-  .page-link { text-decoration: none; margin-left: 6px; font-size: 11px; color: #3b5bdb; }
-  .page-link:hover { text-decoration: underline; }
+  .page-link {
+    background: #e0e0e0;
+    border: none;
+    border-radius: 3px;
+    padding: 2px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    color: #555;
+    margin-left: 6px;
+  }
+  .page-link:hover { background: #ccc; }
+  .page-link.copied { background: #4caf50; color: #fff; }
   td.matches { font-family: 'SF Mono', Consolas, monospace; font-size: 12px; }
   .match { display: flex; align-items: baseline; gap: 8px; padding: 3px 0; border-bottom: 1px dashed #f0f0f0; }
   .match:last-child { border-bottom: none; }
   .match .line { color: #aaa; font-size: 11px; white-space: nowrap; min-width: 36px; }
   .match code { color: #c0392b; background: #fff5f5; border-radius: 4px; padding: 1px 6px; word-break: break-all; }
+  .match .translation { color: #666; font-size: 11px; margin-left: 8px; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -424,7 +518,7 @@ function generateHtml(all, bilingual, pageNameMap, routerPrefix) {
 <h3 class="section-title bilingual">中英文混合正则（${bilingual.length} 处）</h3>
 <div class="table-wrap">
 <table>
-  <thead><tr class="red"><th>文件</th><th>页面名称</th><th>中英文正则</th></tr></thead>
+  <thead><tr class="red"><th>文件</th><th>页面名称</th><th>正则</th><th>翻译</th></tr></thead>
   <tbody>
     ${biRowsHtml}
   </tbody>
@@ -434,13 +528,27 @@ function generateHtml(all, bilingual, pageNameMap, routerPrefix) {
 <h3 class="section-title">全部正则（${all.length} 处）</h3>
 <div class="table-wrap">
 <table>
-  <thead><tr><th>文件</th><th>页面名称</th><th>正则</th></tr></thead>
+  <thead><tr><th>文件</th><th>页面名称</th><th>正则</th><th>翻译</th></tr></thead>
   <tbody>
     ${allRowsHtml}
   </tbody>
 </table>
 </div>
 
+<script>
+function copyToClipboard(btn, text) {
+    navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(function() {
+            btn.textContent = '复制';
+            btn.classList.remove('copied');
+        }, 1500);
+    }, function(err) {
+        console.error('复制失败: ', err);
+    });
+}
+</script>
 
 </body>
 </html>`;
@@ -478,17 +586,20 @@ module.exports = async function (options) {
 
     if (all.length === 0) {
         spinner.stop(chalk.green('✅ 未找到任何正则表达式'));
+        // 仍然生成空报告 HTML
+        const routerPrefix = readRouterPrefix(projectRoot);
+        const htmlPath = path.join(projectRoot, 'regex.html');
+        fs.writeFileSync(htmlPath, generateHtml(all, [], pageNameMap, routerPrefix), 'utf-8');
+        spinner.succeed(chalk.green(`\n📄 HTML 已写入: ${htmlPath}`));
         return { all: [], bilingual: [] };
     }
 
     const bilingual = all.filter((m) => hasChinese(m.pattern) && hasEnglish(m.pattern));
 
-    if (bilingual.length !== 0) {
-        const routerPrefix = readRouterPrefix(projectRoot);
-        const htmlPath = path.join(projectRoot, 'regex.html');
-        fs.writeFileSync(htmlPath, generateHtml(all, bilingual, pageNameMap, routerPrefix), 'utf-8');
-        spinner.succeed(chalk.green(`\n📄 HTML 已写入: ${htmlPath}`));
-    }
+    const routerPrefix = readRouterPrefix(projectRoot);
+    const htmlPath = path.join(projectRoot, 'regex.html');
+    fs.writeFileSync(htmlPath, generateHtml(all, bilingual, pageNameMap, routerPrefix), 'utf-8');
+    spinner.succeed(chalk.green(`\n📄 HTML 已写入: ${htmlPath}`));
 
     return { all, bilingual };
 };

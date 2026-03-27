@@ -152,8 +152,10 @@ function buildPageLink(pageName, routePath, routerPrefix, esc) {
     if (!routePath) return label;
     const prefix = routerPrefix.replace(/\/$/, '');
     const rp = routePath.startsWith('/') ? routePath : '/' + routePath;
-    const url = `https://zhice.tcloud.tongdun.cn${prefix}${rp}`;
-    return `<span>${label}<a class="page-link" href="${url}" target="_blank" rel="noopener">点击跳转</a></span>`;
+    const fullPath = `${prefix}${rp}`;
+    return `<span>${label}<button class="page-link" onclick="copyToClipboard(this, '${esc(
+        fullPath.replace(/'/g, '\\\'')
+    )}')">复制路径</button></span>`;
 }
 
 /**
@@ -190,7 +192,9 @@ function generateHtml(items, routerPrefix) {
                 let span = 1;
                 while (i + span < rows.length && rows[i + span].lastFile === row.lastFile) span++;
                 const spanAttr = span > 1 ? ` rowspan="${span}"` : '';
-                fileCell = `<td class="file"${spanAttr}>${esc(row.lastFile)}</td>`;
+                fileCell = `<td class="file"${spanAttr} title="${esc(row.lastFile)}">${esc(
+                    row.lastFile
+                )}<button class="copy-btn" onclick="copyToClipboard(this, '${esc(row.lastFile.replace(/'/g, "\\'"))}')">复制</button></td>`;
             }
             const chainHtml = row.chain
                 .map((f, idx) => {
@@ -309,17 +313,44 @@ function generateHtml(items, routerPrefix) {
     color: #c0392b;
     font-weight: 600;
     white-space: nowrap;
-    max-width: 320px;
+    width: 20%;
+    max-width: 20%;
     overflow: hidden;
     text-overflow: ellipsis;
+    position: relative;
   }
+  .copy-btn {
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #e0e0e0;
+    border: none;
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 10px;
+    cursor: pointer;
+    color: #555;
+  }
+  .copy-btn:hover { background: #ccc; }
+  .copy-btn.copied { background: #4caf50; color: #fff; }
   td.page {
     white-space: nowrap;
     font-weight: 700;
     font-size: 13px;
   }
-  .page-link { text-decoration: none; }
-  .page-link:hover .page-badge { background: #c8e6c9; border-color: #81c784; }
+  .page-link {
+    background: #e0e0e0;
+    border: none;
+    border-radius: 3px;
+    padding: 2px 8px;
+    font-size: 11px;
+    cursor: pointer;
+    color: #555;
+    margin-left: 6px;
+  }
+  .page-link:hover { background: #ccc; }
+  .page-link.copied { background: #4caf50; color: #fff; }
   .page-badge {
     display: inline-block;
     background: #e8f5e9;
@@ -393,6 +424,22 @@ function generateHtml(items, routerPrefix) {
   </tbody>
 </table>
 </div>
+
+<script>
+function copyToClipboard(btn, text) {
+    navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '已复制';
+        btn.classList.add('copied');
+        setTimeout(function() {
+            btn.textContent = '复制';
+            btn.classList.remove('copied');
+        }, 1500);
+    }, function(err) {
+        console.error('复制失败: ', err);
+    });
+}
+</script>
+
 </body>
 </html>`;
 }
@@ -403,22 +450,28 @@ function generateHtml(items, routerPrefix) {
 module.exports = async function (options) {
     const projectRoot = process.cwd();
     const baseDir = options?.dir || path.join(projectRoot, 'src');
-    const validatorName = options?.validator || 'validatorName';
+    const validatorNames = ['validatorName', 'getValidatorNameReg', 'getValidatorNameMsg'];
     spinner.start('执行完成后会在根目录下生成html页面，具体可查看该页面');
 
-    const validatorResult = await validatorTrace({
-        ...options,
-        json: true,
-        validator: validatorName,
-        dir: baseDir
-    });
+    // 收集所有 validator 的结果
+    let allValidatorFiles = [];
+    for (const validatorName of validatorNames) {
+        const result = await validatorTrace({
+            json: true,
+            validator: validatorName,
+            dir: baseDir
+        });
+        if (result && result.length > 0) {
+            allValidatorFiles = allValidatorFiles.concat(result.map((item) => ({ ...item, validatorName })));
+        }
+    }
 
-    if (validatorResult.length === 0) {
+    if (allValidatorFiles.length === 0) {
         spinner.stop('✅ 未找到任何使用 validator 的文件');
         return [];
     }
 
-    const validatorFiles = validatorResult.map((item) => path.resolve(projectRoot, item.sourceFile));
+    const validatorFiles = allValidatorFiles.map((item) => path.resolve(projectRoot, item.sourceFile));
 
     const depMap = await buildDependencyGraph(projectRoot);
     const reverseMap = buildReverseMap(depMap);

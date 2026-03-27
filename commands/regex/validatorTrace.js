@@ -73,12 +73,14 @@ function findFilesImportingValidator(contentMap, validatorName) {
 function analyzeExports(content, validatorName) {
     const result = { isExportValidator: false, validatorExportedNames: [] };
 
-    if (new RegExp(`export\\s+\\{${validatorName}\\}`).test(content)) {
+    // 1. 直接 export { validatorName }
+    if (new RegExp(`export\\s+\\{${validatorName}\}`).test(content)) {
         result.isExportValidator = true;
         result.validatorExportedNames.push(validatorName);
     }
 
-    const assignRe = /export\s+(?:const\s+)?(\w+)\s*=\s*(\w+)\s*\(/g;
+    // 2. export const xxx = validatorName 或 export const xxx = validatorName()
+    const assignRe = /export\s+const\s+(\w+)\s*=\s*(\w+)(?:\(\))?;/g;
     let match;
     while ((match = assignRe.exec(content)) !== null) {
         if (match[2] === validatorName) {
@@ -86,6 +88,19 @@ function analyzeExports(content, validatorName) {
             result.validatorExportedNames.push(match[1]);
         }
     }
+
+    // 3. export function xxx() {} / export class xxx {} - 后面调用了 validator
+    const funcRe = /export\s+(?:function|class)\s+(\w+)/g;
+    while ((match = funcRe.exec(content)) !== null) {
+        const funcName = match[1];
+        // 检查函数体内是否调用了 validator
+        const funcBodyMatch = content.match(new RegExp(`export\\s+(?:function|class)\\s+${funcName}[\\s\\S]*?(?=\\n\\s*export|\\n\\s*\\n|\\s*$)`));
+        if (funcBodyMatch && funcBodyMatch[0].includes(validatorName)) {
+            result.isExportValidator = true;
+            result.validatorExportedNames.push(funcName);
+        }
+    }
+
     return result;
 }
 
@@ -99,7 +114,7 @@ function isVariableUsed(content, varName) {
         .replace(/import\s+.*$/gm, '');
 
     return (
-        new RegExp(`\\b${varName}\\s*\\(`).test(stripped) ||
+        new RegExp(`\\b${varName}\\s*\\(?`).test(stripped) ||  // 支持 ( 和 ?(
         new RegExp(`[=,(<:\\s]\\s*${varName}\\b`).test(stripped) ||
         new RegExp(`\\{[^}]*\\b${varName}\\b[^}]*\\}`).test(stripped)
     );
@@ -166,7 +181,13 @@ module.exports = async function (options) {
         const exportInfo = analyzeExports(content, validatorName);
 
         if (exportInfo.isExportValidator) {
-            // 文件 re-export 了 validator，找真正使用 exportedName 的消费者
+            // 文件 re-export 了 validator，先把 re-export 文件本身加入报告
+            report.push({
+                sourceFile: relativePath,
+                referenceType: 're-export',
+                exportedNames: exportInfo.validatorExportedNames
+            });
+            // 找真正使用 exportedName 的消费者
             for (const exportedName of exportInfo.validatorExportedNames) {
                 for (const refFile of findFilesReferencingExport(contentMap, filePath, exportedName)) {
                     report.push({

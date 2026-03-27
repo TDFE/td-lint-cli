@@ -109,7 +109,7 @@ program
 
 program
     .command('find-regex')
-    .description('查找目录下正则中同时含有中英文的匹配项')
+    .description('查找目录下所有正则')
     .alias('fr')
     .addOption(new Option('-d, --dir <dir>', '源码目录').default('src'))
     .action(async (options) => {
