@@ -253,6 +253,10 @@ function hasEnglish(str) {
     return /[a-zA-Z]/.test(str);
 }
 
+function hasDigits(str) {
+    return /[0-9]/.test(str) || /\\d/.test(str);
+}
+
 // 正则翻译：将正则模式翻译成中文
 function translateRegex(pattern) {
     if (!pattern) return '';
@@ -594,7 +598,7 @@ module.exports = async function (options) {
         return { all: [], bilingual: [] };
     }
 
-    const bilingual = all.filter((m) => hasChinese(m.pattern) && hasEnglish(m.pattern));
+    const bilingual = all.filter((m) => hasChinese(m.pattern) && hasEnglish(m.pattern) && hasDigits(m.pattern));
 
     const routerPrefix = readRouterPrefix(projectRoot);
     const htmlPath = path.join(projectRoot, 'regex.html');
