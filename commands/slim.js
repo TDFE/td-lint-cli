@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+const fs = require('fs');
+const path = require('path');
 const webpack = require('webpack');
 const lodash = require('lodash');
 const shell = require('shelljs');
@@ -6,10 +8,36 @@ const merge = require('webpack-merge');
 const { prompt } = require('inquirer');
 const fg = require('fast-glob');
 const ora = require('ora');
+const micromatch = require('micromatch');
 const { slimQuest } = require('../common');
 const spinner = ora('Loading undead unicorns');
 
 const filterFiles = ['src/index.ejs', 'src/index.js', 'src/index.html'];
+
+function readSlimIgnore(cwd) {
+    const configPath = path.join(cwd, 'tdmc.config.json');
+    if (!fs.existsSync(configPath)) return [];
+    try {
+        const config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+        return Array.isArray(config.exclude) ? config.exclude : [];
+    } catch (e) {
+        console.error('[slim] tdmc.config.json 解析失败:', e.message);
+        return [];
+    }
+}
+
+function isSlimIgnored(filePath, cwd, patterns) {
+    if (!patterns.length) return false;
+    const relativePath = path.relative(cwd, filePath);
+    return patterns.some((pattern) => {
+        const normalized = pattern.replace(/\/$/, '');
+        if (relativePath === normalized || relativePath.startsWith(normalized + '/')) {
+            return true;
+        }
+        const globPatterns = pattern.startsWith('**/') ? [pattern] : [pattern, `**/${pattern}`];
+        return micromatch.isMatch(relativePath, globPatterns);
+    });
+}
 
 class Slim {
     apply(compiler) {
@@ -32,8 +60,10 @@ class Slim {
 module.exports = function () {
     try {
         prompt(slimQuest).then(async ({ isDel, webpackPath, dirName }) => {
-            let baseWebpackConfig = require(`${process.cwd()}/${webpackPath}`);
-            const allFiles = fg.sync([`${process.cwd()}/${dirName}/**/*.*`]);
+            const cwd = process.cwd();
+            const slimIgnorePatterns = readSlimIgnore(cwd);
+            let baseWebpackConfig = require(`${cwd}/${webpackPath}`);
+            const allFiles = fg.sync([`${cwd}/${dirName}/**/*.*`]);
             baseWebpackConfig.module =
                 typeof baseWebpackConfig.module === 'function' ? baseWebpackConfig.module(true) : baseWebpackConfig.module;
             spinner.start('正在查询依赖，可能会花费数分钟，请稍后');
@@ -57,6 +87,7 @@ module.exports = function () {
                                 if (
                                     !usedFiles.includes(item) &&
                                     !filterFiles.some((fileName) => item.includes(fileName)) &&
+                                    !isSlimIgnored(item, cwd, slimIgnorePatterns) &&
                                     item.endsWith('.js')
                                 ) {
                                     total.push(item);
@@ -68,7 +99,7 @@ module.exports = function () {
                         if (Array.isArray(unUsedFiles)) {
                             console.warn('以下文件文件没有被采用，请确认是否需要删除');
                             unUsedFiles.forEach((i) => {
-                                console.warn(i.replace(`${process.cwd()}/`, ''));
+                                console.warn(path.relative(cwd, i));
                                 if (isDel) {
                                     shell.rm('-rf', i);
                                 }
